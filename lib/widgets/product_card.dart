@@ -18,9 +18,9 @@ class ProductCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.borderRadius),
           side: BorderSide(
-            color: AppTheme.colorScheme.onSecondaryContainer,
-            width: .5,
-          ),
+            color: Colors.deepPurple.shade100,
+            width: 0.5,
+          ), // Light purple border
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.paddingMedium),
@@ -144,9 +144,9 @@ class _DescriptionMerInfo extends StatelessWidget {
                         AppTheme.borderRadius,
                       ),
                       side: BorderSide(
-                        color: AppTheme.colorScheme.onSecondaryContainer,
-                        width: .5,
-                      ),
+                        color: Colors.deepPurple.shade100,
+                        width: 0.5,
+                      ), // Light purple border
                     ),
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,9 +237,9 @@ class _DescriptionMerInfo extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppTheme.borderRadius),
               side: BorderSide(
-                color: AppTheme.colorScheme.onSecondaryContainer,
-                width: .5,
-              ),
+                color: Colors.deepPurple.shade100,
+                width: 0.5,
+              ), // Light purple border
             ),
           ),
           child: const Text('Mer info'),
@@ -272,9 +272,9 @@ class _AddToCartButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppTheme.borderRadius),
               side: BorderSide(
-                color: AppTheme.colorScheme.onSecondaryContainer,
-                width: .5,
-              ),
+                color: Colors.deepPurple.shade100,
+                width: 0.5,
+              ), // Light purple border
             ),
           ),
           child: const Text('Lägg till'),

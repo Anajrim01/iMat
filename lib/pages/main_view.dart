@@ -27,10 +27,8 @@ class _MainViewState extends State<MainView> {
 
     // Common style for "Handla", "Tidigare beställningar", "Mina favoriter" buttons
     final ButtonStyle lightPurpleButtonStyle = ElevatedButton.styleFrom(
-      backgroundColor: const Color(
-        0xFFF3E5F5,
-      ), // Light purple (Colors.purple[50])
-      foregroundColor: Colors.black, // Text and icon color
+      backgroundColor: AppTheme.colorScheme.secondary,
+      foregroundColor: Colors.black,
       elevation: 0.5,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       shape: RoundedRectangleBorder(
@@ -149,6 +147,10 @@ class _MainViewState extends State<MainView> {
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  side: BorderSide(
+                    color: Colors.deepPurple.shade100,
+                    width: 1,
+                  ), // Light purple border
                 ),
                 textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
