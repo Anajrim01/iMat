@@ -114,7 +114,13 @@ Project---Design-och-kontruktion-av-grafiska-gr-nssnitt/
 
 ### Skärmdumpar
 
-![image](https://github.com/user-attachments/assets/4d956723-b915-45fa-9a3e-1e85094c7c45)
+#### Startsida
+![image](https://github.com/user-attachments/assets/f966d28a-568a-4c06-9ef8-062f3402f18c)
+
+#### Tidigare Beställningar
+![image](https://github.com/user-attachments/assets/8544903b-60b7-4fab-a6ac-514ecd16f8c8)
+
+
 
 
 ### Licens
