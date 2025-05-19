@@ -57,7 +57,7 @@ Se till att du har följande programvara installerad:
 
 2.  **Navigera till projektmappen:**
     ```bash
-    cd imat_app
+    cd Project---Design-och-kontruktion-av-grafiska-gr-nssnitt
     ```
 
 3.  **Hämta beroenden:**
@@ -75,7 +75,7 @@ För att appen ska fungera korrekt med backend-tjänsten behöver du konfigurera
     ```dart
     // lib/model/imat/settings.dart
     class Settings {
-      static const int groupId = 27; // Ändra 27 till ditt gruppnummer
+      static const int groupId = 11; // Ändra 11 till ditt gruppnummer
     }
     ```
 
@@ -92,7 +92,7 @@ flutter run
 Projektet har följande mappstruktur:
 
 ```
-imat_app/
+Project---Design-och-kontruktion-av-grafiska-gr-nssnitt/
 ├── lib/
 │   ├── main.dart                 # Appens startpunkt (entrypoint)
 │   ├── app_theme.dart            # Definitioner för färger, padding, textstilar etc.
