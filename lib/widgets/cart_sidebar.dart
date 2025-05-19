@@ -40,7 +40,7 @@ class CartSidebar extends StatelessWidget {
           ),
           ElevatedButton(
             // TODO: Add a checkout page
-            onPressed: () => handler.reset(),
+            onPressed: () => handler.placeOrder(),
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(48),
               backgroundColor: AppTheme.colorScheme.secondary,
