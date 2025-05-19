@@ -16,7 +16,7 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   String _sortOrder = 'Pris lågt till högt';
-  dynamic _categoryFilter;
+  List<dynamic> _categoryFilter = [];
   bool _showFavoritesOnly = false;
 
   @override
@@ -25,19 +25,22 @@ class _MainViewState extends State<MainView> {
     final filtered = _applyFilters(handler);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('iMat')),
+      appBar: AppBar(title: const Text('IMat')),
       body: Row(
         children: [
           // Vänsterspalt: kategorival
           CategorySidebar(
             showFavorites: _showFavoritesOnly,
-            onSelectAll: () => setState(() {
-              _showFavoritesOnly = false;
-              _categoryFilter = null;
-            }),
-            onSelectFavorites: () => setState(() {
-              _showFavoritesOnly = true;
-            }),
+            onSelectAll:
+                () => setState(() {
+                  _showFavoritesOnly = false;
+                  _categoryFilter = [];
+                }),
+            onSelectFavorites:
+                () => setState(() {
+                  _showFavoritesOnly = true;
+                  _categoryFilter = [];
+                }),
           ),
 
           // Mittsektion: filter + grid
@@ -50,34 +53,48 @@ class _MainViewState extends State<MainView> {
                 children: [
                   FilterBar(
                     sortOrder: _sortOrder,
-                    category: _categoryFilter,
+                    category: _categoryFilter, // Pass the list of categories
                     categories:
-                        handler.products.map((p) => p.category).toSet().toList(),
+                        handler.products
+                            .map((p) => p.category)
+                            .toSet()
+                            .toList(),
                     showFavoritesOnly: _showFavoritesOnly,
                     onSortChanged: (v) => setState(() => _sortOrder = v),
-                    onCategoryChanged: (v) => setState(() => _categoryFilter = v),
-                    onShowFavsChanged: (v) =>
-                        setState(() => _showFavoritesOnly = v),
+                    onCategoryChanged:
+                        (v) => setState(
+                          () => _categoryFilter = v as List<dynamic>,
+                        ),
+                    onShowFavsChanged:
+                        (v) => setState(() => _showFavoritesOnly = v),
                   ),
                   const SizedBox(height: AppTheme.paddingMediumSmall),
-                  if (_categoryFilter != null)
+                  if (_categoryFilter.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: AppTheme.paddingSmall),
+                      padding: const EdgeInsets.only(
+                        bottom: AppTheme.paddingSmall,
+                      ),
                       child: Wrap(
                         spacing: 8,
-                        children: [
-                          Chip(
-                            label: Text(_categoryFilter.toString().split('.').last),
-                            onDeleted: () => setState(() => _categoryFilter = null),
-                          )
-                        ],
+                        runSpacing: 4,
+                        children:
+                            _categoryFilter.map((categoryValue) {
+                              return Chip(
+                                label: Text(
+                                  categoryValue.toString().split('.').last,
+                                ),
+                                onDeleted: () {
+                                  setState(() {
+                                    _categoryFilter.remove(categoryValue);
+                                  });
+                                },
+                                backgroundColor: Colors.blueGrey[100],
+                              );
+                            }).toList(),
                       ),
                     ),
                   Expanded(
-                    child: ProductGrid(
-                      products: filtered,
-                      handler: handler,
-                    ),
+                    child: ProductGrid(products: filtered, handler: handler),
                   ),
                 ],
               ),
@@ -92,15 +109,25 @@ class _MainViewState extends State<MainView> {
   }
 
   List<Product> _applyFilters(ImatDataHandler handler) {
-    var list = handler.products;
-    if (_showFavoritesOnly) list = handler.favorites;
-    if (_categoryFilter != null) {
-      list =
-          list.where((p) => p.category == _categoryFilter).toList(growable: false);
+    // Klona listan så att vi inte sorterar om originalet
+    var list = handler.products.toList();
+
+    if (_showFavoritesOnly) {
+      list = handler.favorites.toList();
     }
-    list.sort((a, b) => _sortOrder == 'Pris högt till lågt'
-        ? b.price.compareTo(a.price)
-        : a.price.compareTo(b.price));
+
+    if (_categoryFilter.isNotEmpty) {
+      list = list.where((p) => _categoryFilter.contains(p.category)).toList();
+    }
+
+    // Sortera klonen
+    list.sort(
+      (a, b) =>
+          _sortOrder == 'Pris högt till lågt'
+              ? b.price.compareTo(a.price)
+              : a.price.compareTo(b.price),
+    );
+
     return list;
   }
 }

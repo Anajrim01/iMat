@@ -4,39 +4,59 @@ import 'package:imat_app/model/imat_data_handler.dart';
 
 class CartSidebar extends StatelessWidget {
   final ImatDataHandler handler;
-
   const CartSidebar({required this.handler, super.key});
 
   @override
   Widget build(BuildContext context) {
     final cart = handler.getShoppingCart();
-    return SizedBox(
-      width: 300,
+    return Container(
+      width: 250, // smalare
+      padding: const EdgeInsets.all(AppTheme.paddingMedium),
+      color: Colors.grey.shade100,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(AppTheme.paddingMediumSmall),
-            child: Text('Kundvagn',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
+          Text('Kundvagn', style: Theme.of(context).textTheme.headlineSmall),
+          const Divider(),
           Expanded(
-            child: ListView(
-              children: cart.items.map((item) {
+            child: ListView.builder(
+              itemCount: cart.items.length,
+              itemBuilder: (_, i) {
+                final item = cart.items[i];
                 final total = item.amount * item.product.price;
                 return ListTile(
-                  title: Text(item.product.name),
-                  subtitle: Text('× ${item.amount}'),
-                  trailing: Text('${total.toStringAsFixed(2)} kr'),
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    item.product.name,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  trailing: Text(
+                    '${item.amount} × ${total.toStringAsFixed(2)} kr',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 );
-              }).toList(),
+              },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(AppTheme.paddingMediumSmall),
-            child: ElevatedButton(
-              onPressed: handler.placeOrder,
-              child: const Text('Beställ'),
+          ElevatedButton(
+            // TODO: Add a checkout page
+            onPressed: () => handler.reset(),
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(48),
+              backgroundColor: AppTheme.colorScheme.secondary,
+              foregroundColor: Colors.black,
+              textStyle: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                side: BorderSide(
+                  color: AppTheme.colorScheme.onSecondaryContainer,
+                  width: .5,
+                ),
+              ),
             ),
+            child: const Text('Gå till kassan'),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imat_app/app_theme.dart';
 
 class FilterBar extends StatelessWidget {
   final String sortOrder;
@@ -22,68 +23,133 @@ class FilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // Sorteringsdropdown
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Sortera efter',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            DropdownButton<String>(
-              value: sortOrder,
-              items: const [
-                DropdownMenuItem(
-                  value: 'Pris lågt till högt',
-                  child: Text('Lågt→högt'),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppTheme.paddingSmall),
+      child: Row(
+        children: [
+          // Sorteringsdropdown
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sortera efter',
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                DropdownMenuItem(
-                  value: 'Pris högt till lågt',
-                  child: Text('Högt→lågt'),
+                DropdownButton<String>(
+                  isExpanded: true,
+                  value: sortOrder,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Pris lågt till högt',
+                      child: Text('Pris ↑'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Pris högt till lågt',
+                      child: Text('Pris ↓'),
+                    ),
+                  ],
+                  onChanged: (v) => onSortChanged(v!),
                 ),
               ],
-              onChanged: (v) => onSortChanged(v!),
             ),
-          ],
-        ),
-        const SizedBox(width: 24),
+          ),
+          const SizedBox(width: AppTheme.paddingMedium),
 
-        // Kategoridropdown
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Typ av frukt',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            DropdownButton<dynamic>(
-              hint: const Text('Alla'),
-              value: category,
-              items: [
-                const DropdownMenuItem(value: null, child: Text('Alla')),
-                ...categories.map(
-                  (c) => DropdownMenuItem(
-                    value: c,
-                    child: Text(c.toString().split('.').last),
+          // TODO: Update this to only show sub-categories that are available based on the selected category
+          // Kategorival
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Typ av produkt',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                PopupMenuButton<dynamic>(
+                  tooltip: 'Välj kategorier',
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ), // Adjust padding to match DropdownButton
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.38),
+                        ),
+                      ), // Mimic DropdownButton underline
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            (category as List<dynamic>).isEmpty
+                                ? 'Alla'
+                                : (category as List<dynamic>)
+                                    .map((c) => c.toString().split('.').last)
+                                    .join(', '),
+                            overflow: TextOverflow.ellipsis,
+                            style:
+                                (category as List<dynamic>).isEmpty
+                                    ? Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium?.copyWith(
+                                      color: Theme.of(context).hintColor,
+                                    )
+                                    : Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        const Icon(Icons.arrow_drop_down),
+                      ],
+                    ),
                   ),
+                  onSelected: (dynamic selectedValue) {
+                    List<dynamic> currentSelected = List.from(
+                      category as List<dynamic>,
+                    );
+                    if (currentSelected.contains(selectedValue)) {
+                      currentSelected.remove(selectedValue);
+                    } else {
+                      currentSelected.add(selectedValue);
+                    }
+                    onCategoryChanged(currentSelected);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return categories.map((catItem) {
+                      return CheckedPopupMenuItem<dynamic>(
+                        value: catItem,
+                        checked: (category as List<dynamic>).contains(catItem),
+                        child: Text(catItem.toString().split('.').last),
+                      );
+                    }).toList();
+                  },
                 ),
               ],
-              onChanged: onCategoryChanged,
             ),
-          ],
-        ),
-        const Spacer(),
-
-        // Favorit‐toggle
-        Row(
-          children: [
-            const Text('Endast favoriter'),
-            Switch(value: showFavoritesOnly, onChanged: onShowFavsChanged),
-          ],
-        ),
-      ],
+          ),
+          const SizedBox(width: AppTheme.paddingMedium),
+          // Favorit‐switch
+          Row(
+            children: [
+              Text(
+                'Endast favoriter',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(width: AppTheme.paddingTiny),
+              Switch(
+                value: showFavoritesOnly,
+                onChanged: onShowFavsChanged,
+                materialTapTargetSize: MaterialTapTargetSize.padded,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
