@@ -211,12 +211,12 @@ class InternetHandler {
     //print('Put ${json}');
     // Add customer identifier
     if (cid > 0) {
-      resourcePath = '${resourcePath}/${cid}';
+      resourcePath = '$resourcePath/$cid';
     }
     //print('Put ${json}');
     // Add product identifier
     if (pid > 0) {
-      resourcePath = '${resourcePath}/${pid}';
+      resourcePath = '$resourcePath/$pid';
     }
 
     dbugPrint(resourcePath);
@@ -250,12 +250,12 @@ class InternetHandler {
     //print('Put ${json}');
     // Add customer identifier
     if (cid > 0) {
-      resourcePath = '${resourcePath}/${cid}';
+      resourcePath = '$resourcePath/$cid';
     }
     //print('Put ${json}');
     // Add product identifier
     if (pid > 0) {
-      resourcePath = '${resourcePath}/${pid}';
+      resourcePath = '$resourcePath/$pid';
     }
 
     dbugPrint(resourcePath);
@@ -301,7 +301,7 @@ class InternetHandler {
   static Future<Image?> fetchImage(int pid) async {
     try {
       final response = await http.get(
-        Uri.parse(baseURL + 'image/${pid}'),
+        Uri.parse('${baseURL}image/${pid}'),
         headers: apiKeyHeader,
       );
       if (response.statusCode == 200) {
@@ -328,7 +328,7 @@ class InternetHandler {
 
     try {
       final response = await http.get(
-        Uri.parse(baseURL + 'image/${pid}'),
+        Uri.parse('${baseURL}image/${pid}'),
         headers: apiKeyHeader,
       );
       if (response.statusCode == 200) {

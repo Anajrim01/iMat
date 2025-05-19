@@ -141,7 +141,6 @@ class _DescriptionMerInfo extends StatelessWidget {
           const SizedBox(width: AppTheme.paddingSmall),
           ElevatedButton(
             onPressed: () => _showDetailDialog(context, product, detail),
-            child: const Text('Mer info'),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFE6E0F8),
               foregroundColor: Colors.black,
@@ -149,6 +148,7 @@ class _DescriptionMerInfo extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: 12, vertical: 6),
             ),
+            child: const Text('Mer info'),
           ),
         ],
       ),
@@ -184,7 +184,6 @@ class _AddToCartButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () =>
             handler.shoppingCartAdd(ShoppingItem(product, amount: 1)),
-        child: const Text('Lägg till'),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFE6E0F8),
           foregroundColor: Colors.black,
@@ -193,6 +192,7 @@ class _AddToCartButton extends StatelessWidget {
           textStyle:
               const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
+        child: const Text('Lägg till'),
       ),
     );
   }
