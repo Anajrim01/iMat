@@ -3,6 +3,7 @@ import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
+// TODO: Att klicka på själva "kortet" av produkten borde visa "mer info"-vyn, inte bara mer info knappen.
 
 class ProductCard extends StatelessWidget {
   final Product product;
