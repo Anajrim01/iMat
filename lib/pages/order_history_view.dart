@@ -3,6 +3,7 @@ import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderHistoryView extends StatelessWidget {
   const OrderHistoryView({super.key});
@@ -12,6 +13,33 @@ class OrderHistoryView extends StatelessWidget {
     final handler = context.watch<ImatDataHandler>();
     final orders = handler.orders;
 
+    final ButtonStyle lightPurpleButtonStyle = ElevatedButton.styleFrom(
+      backgroundColor: AppTheme.colorScheme.secondary,
+      foregroundColor: Colors.black,
+      elevation: 0.5,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        side: BorderSide(
+          color: Colors.deepPurple.shade100,
+          width: 1,
+        ), // Light purple border
+      ),
+    );
+    final ButtonStyle selectedButtonStyle = ElevatedButton.styleFrom(
+      backgroundColor: AppTheme.colorScheme.primary,
+      foregroundColor: Colors.black,
+      elevation: 0.5,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        side: BorderSide(
+          color: Colors.lightGreenAccent.shade100,
+          width: 1,
+        ), // Light green border
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -20,146 +48,220 @@ class OrderHistoryView extends StatelessWidget {
               'I',
               style: TextStyle(
                 color: AppTheme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 28,
+                fontSize: 50,
               ),
             ),
-            Text(
-              'Mat',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
-            ),
+            const Text('Mat', style: TextStyle(fontSize: 50)),
+            const SizedBox(width: 150),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText: 'Sök varor...',
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    contentPadding: EdgeInsets.symmetric(vertical: 0),
-                    suffixIcon: Container(
-                      margin: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: AppTheme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(
-                          AppTheme.borderRadius / 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                    color: Colors.grey[200],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.search),
+                            hintText: 'Sök varor...',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.borderRadius,
+                              ),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
-                      child: Center(
-                        child: Text(
-                          'Sök',
-                          style: TextStyle(color: Colors.white),
+                      Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.green[400],
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(AppTheme.borderRadius),
+                            bottomRight: Radius.circular(AppTheme.borderRadius),
+                          ),
+                        ),
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 35),
+                            child: Text(
+                              'Sök',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadius,
-                      ),
-                      borderSide: BorderSide.none,
-                    ),
+                    ],
                   ),
                 ),
               ),
             ),
-            ElevatedButton(
+            const SizedBox(width: 150), // Add spacing before login button
+            ElevatedButton.icon(
               onPressed: () {},
+              icon: const Icon(Icons.person_outline),
+              label: const Text('Logga in'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[200],
+                backgroundColor: const Color(0xFFF3E5F5),
                 foregroundColor: Colors.black,
+                elevation: 0.5,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 24,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
-                child: Text('Logga in'),
               ),
             ),
             const SizedBox(width: 16),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {},
+              icon: const Icon(Icons.shopping_cart),
+              label: const Text('Kundvagn'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.colorScheme.primary,
                 foregroundColor: Colors.white,
+                elevation: 0.5,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 24,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  side: BorderSide(
+                    color: Colors.deepPurple.shade100,
+                    width: 1,
+                  ), // Light purple border
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
-                child: Text('Kundvagn'),
               ),
             ),
+            const SizedBox(width: 25),
           ],
         ),
         toolbarHeight: 80,
         automaticallyImplyLeading: false,
       ),
+
       body: Column(
         children: [
           // Navigation buttons
           Container(
             decoration: BoxDecoration(
+              color: Colors.white,
               border: Border(
                 top: BorderSide(color: Colors.grey[300]!),
                 bottom: BorderSide(color: Colors.grey[300]!),
               ),
             ),
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.shopping_cart),
-                  label: Text('Handla'),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadius,
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _saveValue("showFavorites", false);
+                          Navigator.pushNamed(context, '/');
+                        },
+                        icon: const Icon(
+                          Icons.shopping_basket_outlined,
+                          size: 24,
+                        ),
+                        label: Text('Handla'),
+                        style: lightPurpleButtonStyle.copyWith(
+                          padding: WidgetStateProperty.all(
+                            const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 20,
+                            ),
+                          ),
+                          textStyle: WidgetStateProperty.all(
+                            const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.access_time),
-                  label: Text('Tidigare beställningar'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadius,
+                      const SizedBox(width: 16),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OrderHistoryView(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.access_time, size: 24),
+                        label: const Text(
+                          'Tidigare beställningar',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: selectedButtonStyle.copyWith(
+                          padding: WidgetStateProperty.all(
+                            const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 20,
+                            ),
+                          ),
+                          textStyle: WidgetStateProperty.all(
+                            const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16),
-                OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.star),
-                  label: Text('Mina favoriter'),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadius,
+                      const SizedBox(width: 16),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _saveValue('showFavorites', true);
+                          Navigator.pushNamed(context, '/');
+                        },
+                        icon: const Icon(Icons.star_border_outlined, size: 24),
+                        label: Text('Mina favoriter'),
+                        style: lightPurpleButtonStyle.copyWith(
+                          padding: WidgetStateProperty.all(
+                            const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 20,
+                            ),
+                          ),
+                          textStyle: WidgetStateProperty.all(
+                            const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -319,5 +421,10 @@ class OrderHistoryView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _saveValue(key, value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, value);
   }
 }

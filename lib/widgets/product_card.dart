@@ -3,39 +3,157 @@ import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
-// TODO: Att klicka på själva "kortet" av produkten borde visa "mer info"-vyn, inte bara mer info knappen.
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final Product product;
   final ImatDataHandler handler;
   const ProductCard(this.product, this.handler, {super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-          side: BorderSide(
-            color: Colors.deepPurple.shade100,
-            width: 0.5,
-          ), // Light purple border
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  bool _isHovered = false;
+
+  void _onCardTap() {
+    showDialog(
+      context: context,
+      builder: (c) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        side: BorderSide(
+        color: Colors.deepPurple.shade100,
+        width: 0.5,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.paddingMedium),
+      ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Expanded(
+          child: Text(
+          widget.product.name,
+          style: AppTheme.textTheme.headlineMedium,
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.pop(c),
+        ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+          width: 200,
+          height: 200,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+            child: widget.handler.getImage(widget.product),
+          ),
+          ),
+          const SizedBox(height: AppTheme.paddingMedium),
+          SizedBox(
+          width: 350,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _ImageFavoritePriceRow(product: product, handler: handler),
+            Text(
+              'Beskrivning:',
+              style: AppTheme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: AppTheme.paddingSmall),
+            Text(
+              widget.handler.getDetail(widget.product)?.description ??
+                'Ingen beskrivning tillgänglig.',
+              style: AppTheme.textTheme.bodyLarge,
+            ),
+            if (widget.handler.getDetail(widget.product)?.origin != null &&
+              widget.handler.getDetail(widget.product)!.origin.isNotEmpty) ...[
               const SizedBox(height: AppTheme.paddingMedium),
-              _TitleExtraInfo(product: product),
+              Text(
+              'Ursprung:',
+              style: AppTheme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: AppTheme.paddingSmall),
-              _DescriptionMerInfo(product: product, handler: handler),
-              const SizedBox(height: AppTheme.paddingMedium),
-              _AddToCartButton(product: product, handler: handler),
+              Text(
+              widget.handler.getDetail(widget.product)!.origin,
+              style: AppTheme.textTheme.bodyLarge,
+              ),
             ],
+            ],
+          ),
+          ),
+        ],
+        ),
+      ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: _onCardTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          width: 200,
+          decoration: BoxDecoration(
+            boxShadow:
+                _isHovered
+                    ? [
+                      BoxShadow(
+                        color: Colors.deepPurple.withValues(alpha: .2),
+                        blurRadius: 16,
+                        offset: const Offset(0, 8),
+                      ),
+                    ]
+                    : [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: .05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+          ),
+          child: Card(
+            elevation: _isHovered ? 10 : 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+              side: BorderSide(color: Colors.deepPurple.shade100, width: 0.5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(AppTheme.paddingMedium),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _ImageFavoritePriceRow(
+                    product: widget.product,
+                    handler: widget.handler,
+                  ),
+                  const SizedBox(height: AppTheme.paddingMedium),
+                  _TitleExtraInfo(product: widget.product),
+                  const SizedBox(height: AppTheme.paddingSmall),
+                  _DescriptionMerInfo(
+                    product: widget.product,
+                    handler: widget.handler,
+                  ),
+                  const SizedBox(height: AppTheme.paddingMedium),
+                  _AddToCartButton(
+                    product: widget.product,
+                    handler: widget.handler,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

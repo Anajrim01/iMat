@@ -8,6 +8,7 @@ import 'package:imat_app/widgets/cart_sidebar.dart';
 import 'package:imat_app/widgets/category_sidebar.dart';
 import 'package:imat_app/widgets/filter_bar.dart';
 import 'package:imat_app/widgets/product_grid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -19,6 +20,19 @@ class _MainViewState extends State<MainView> {
   String _sortOrder = 'Pris lågt till högt';
   List<dynamic> _categoryFilter = [];
   bool _showFavoritesOnly = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedValue();
+  }
+
+  void _loadSavedValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _showFavoritesOnly = prefs.getBool('showFavorites') ?? false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +51,19 @@ class _MainViewState extends State<MainView> {
           color: Colors.deepPurple.shade100,
           width: 1,
         ), // Light purple border
+      ),
+    );
+    final ButtonStyle selectedButtonStyle = ElevatedButton.styleFrom(
+      backgroundColor: AppTheme.colorScheme.primary,
+      foregroundColor: Colors.black,
+      elevation: 0.5,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        side: BorderSide(
+          color: Colors.lightGreenAccent.shade100,
+          width: 1,
+        ), // Light green border
       ),
     );
 
@@ -164,6 +191,7 @@ class _MainViewState extends State<MainView> {
         toolbarHeight: 80,
         automaticallyImplyLeading: false,
       ),
+
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -190,22 +218,49 @@ class _MainViewState extends State<MainView> {
                             _categoryFilter = [];
                           });
                         },
-                        icon: const Icon(Icons.shopping_cart),
-                        label: const Text('Handla'),
-                        style: lightPurpleButtonStyle.copyWith(
-                          padding: WidgetStateProperty.all(
-                            const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 20,
-                            ),
-                          ),
-                          textStyle: WidgetStateProperty.all(
-                            const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                        icon: const Icon(
+                          Icons.shopping_basket_outlined,
+                          size: 24,
+                        ),
+                        label: Text(
+                          'Handla',
+                          style: TextStyle(
+                            color:
+                                (_showFavoritesOnly == false)
+                                    ? Colors.white
+                                    : Colors.black,
                           ),
                         ),
+                        style:
+                            (_showFavoritesOnly == false)
+                                ? selectedButtonStyle.copyWith(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 20,
+                                    ),
+                                  ),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                )
+                                : lightPurpleButtonStyle.copyWith(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 20,
+                                    ),
+                                  ),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton.icon(
@@ -217,8 +272,11 @@ class _MainViewState extends State<MainView> {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.access_time),
-                        label: const Text('Tidigare beställningar'),
+                        icon: const Icon(Icons.access_time, size: 24),
+                        label: const Text(
+                          'Tidigare beställningar',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         style: lightPurpleButtonStyle.copyWith(
                           padding: WidgetStateProperty.all(
                             const EdgeInsets.symmetric(
@@ -242,22 +300,46 @@ class _MainViewState extends State<MainView> {
                             _categoryFilter = [];
                           });
                         },
-                        icon: const Icon(Icons.star_border_outlined),
-                        label: const Text('Mina favoriter'),
-                        style: lightPurpleButtonStyle.copyWith(
-                          padding: WidgetStateProperty.all(
-                            const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 20,
-                            ),
-                          ),
-                          textStyle: WidgetStateProperty.all(
-                            const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                        icon: const Icon(Icons.star_border_outlined, size: 24),
+                        label: Text(
+                          'Mina favoriter',
+                          style: TextStyle(
+                            color:
+                                (_showFavoritesOnly == true)
+                                    ? Colors.white
+                                    : Colors.black,
                           ),
                         ),
+                        style:
+                            (_showFavoritesOnly == true)
+                                ? selectedButtonStyle.copyWith(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 20,
+                                    ),
+                                  ),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                )
+                                : lightPurpleButtonStyle.copyWith(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 20,
+                                    ),
+                                  ),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
                       ),
                     ],
                   ),

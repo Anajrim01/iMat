@@ -22,12 +22,7 @@ class CategorySidebar extends StatelessWidget {
             selected: !showFavorites,
             title: const Text('Allt'),
             onTap: onSelectAll,
-          ),
-          ListTile(
-            selected: showFavorites,
-            title: const Text('Favoriter'),
-            onTap: onSelectFavorites,
-          ),
+          )
         ],
       ),
     );
