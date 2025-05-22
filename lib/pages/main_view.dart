@@ -170,6 +170,16 @@ class _MainViewState extends State<MainView> {
                         _showFavoritesOnly = true;
                         _categoryFilter = [];
                       }),
+                  categories: handler.products
+                      .map((p) => p.category)
+                      .toSet()
+                      .toList(),
+                  selectedCategory: _categoryFilter,
+                  onCategorySelected: (updatedCategories) {
+                    setState(() {
+                      _categoryFilter = updatedCategories;
+                    });
+                  },
                 ),
 
                 // Product content area
