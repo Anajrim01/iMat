@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/model/imat/product.dart';
+import 'package:imat_app/pages/login_view.dart';
 import 'package:imat_app/pages/order_history_view.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/widgets/cart_sidebar.dart';
@@ -78,7 +79,9 @@ class _MainViewState extends State<MainView> {
           // Handle cart button press
         },
         onLoginPressed: () {
-          // Handle login button press
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => const LoginView(),
+          ));
         },
       ),
       body: Column(
