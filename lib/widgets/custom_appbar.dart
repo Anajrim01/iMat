@@ -208,6 +208,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                           handler.shoppingCartAdd(
                                             ShoppingItem(product, amount: 1),
                                           );
+                                          // TODO: Discuss with group
                                           // Show confirmation message (feedback)
                                           // ScaffoldMessenger.of(
                                           //   context,
@@ -403,10 +404,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             icon: const Icon(Icons.person_outline, size: 24),
             label: const Text(
               'Logga in / Registrera',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ), // Larger text
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFF3E5F5),
@@ -435,7 +433,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           //   style: ElevatedButton.styleFrom(
           //     backgroundColor: AppTheme.colorScheme.primary,
           //     foregroundColor: Colors.white,
-          //     elevation: 2, // More elevation for better visibility
+          //     elevation: 2,
           //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           //     shape: RoundedRectangleBorder(
           //       borderRadius: BorderRadius.circular(AppTheme.borderRadius),

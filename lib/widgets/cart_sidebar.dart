@@ -10,7 +10,7 @@ class CartSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = handler.getShoppingCart();
     return Container(
-      width: 250, // smalare
+      width: 250,
       padding: const EdgeInsets.all(AppTheme.paddingMedium),
       color: Colors.grey.shade100,
       child: Column(
@@ -37,8 +37,8 @@ class CartSidebar extends StatelessWidget {
                 );
               },
             ),
-          ),
-          ElevatedButton(
+            ),
+            ElevatedButton.icon(
             // TODO: Add a checkout page
             onPressed: () => handler.placeOrder(),
             style: ElevatedButton.styleFrom(
@@ -46,20 +46,21 @@ class CartSidebar extends StatelessWidget {
               backgroundColor: AppTheme.colorScheme.secondary,
               foregroundColor: Colors.black,
               textStyle: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                side: BorderSide(
-                  color: AppTheme.colorScheme.onSecondaryContainer,
-                  width: .5,
-                ),
+              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+              side: BorderSide(
+                color: Colors.deepPurple.shade100,
+                width: 0.5,
+              ), // Light purple border
               ),
             ),
-            child: const Text('Gå till kassan'),
+            icon: const Icon(Icons.shopping_cart),
+            label: const Text('Gå till kassan'),
+            ),
+          ],
           ),
-        ],
-      ),
     );
   }
 }
