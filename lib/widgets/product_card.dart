@@ -4,6 +4,8 @@ import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 
+// TODO: the detail view of each product should also have a "lägg till" knapp
+
 class ProductCard extends StatefulWidget {
   final Product product;
   final ImatDataHandler handler;
