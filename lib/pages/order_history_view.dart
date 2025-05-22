@@ -185,7 +185,6 @@ class OrderHistoryView extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          _saveValue("showFavorites", false);
                           Navigator.pushNamed(context, '/');
                         },
                         icon: const Icon(

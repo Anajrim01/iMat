@@ -32,6 +32,14 @@ class _MainViewState extends State<MainView> {
     setState(() {
       _showFavoritesOnly = prefs.getBool('showFavorites') ?? false;
     });
+
+    // Favorites shown, don't keep the filter on refresh?
+    _saveValue("showFavorites", false);
+    
+  }
+  void _saveValue(key, value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, value);
   }
 
   @override
