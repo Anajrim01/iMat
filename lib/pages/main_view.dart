@@ -56,7 +56,10 @@ class _MainViewState extends State<MainView> {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-        side: BorderSide(color: Colors.deepPurple.shade100, width: 1.5),
+        side: BorderSide(
+          color: Colors.deepPurple.shade100,
+          width: 0.5,
+        ), // Light purple border
       ),
       textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
     );
@@ -68,7 +71,10 @@ class _MainViewState extends State<MainView> {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-        side: BorderSide(color: Colors.deepPurple.shade300, width: 1.5),
+        side: BorderSide(
+          color: Colors.deepPurple.shade100,
+          width: 0.5,
+        ), // Light purple border
       ),
       textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
     );
@@ -193,7 +199,7 @@ class _MainViewState extends State<MainView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Main heading and sort control - simplified like in reference design
+                        // Main heading and sort control
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: Row(
@@ -226,6 +232,7 @@ class _MainViewState extends State<MainView> {
                                       horizontal: 12,
                                     ),
                                     decoration: BoxDecoration(
+                                      color: Colors.white,
                                       borderRadius: BorderRadius.circular(4),
                                       border: Border.all(
                                         color: Colors.grey.shade300,
@@ -285,6 +292,7 @@ class _MainViewState extends State<MainView> {
                                   horizontal: 12,
                                 ),
                                 decoration: BoxDecoration(
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(4),
                                   border: Border.all(
                                     color: Colors.grey.shade300,
@@ -366,7 +374,7 @@ class _MainViewState extends State<MainView> {
                                       _showFavoritesOnly = value;
                                     });
                                   },
-                                  activeColor: Colors.deepPurple,
+                                  activeColor: AppTheme.colorScheme.primary,
                                 ),
                               ],
                             ),

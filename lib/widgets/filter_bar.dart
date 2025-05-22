@@ -74,7 +74,7 @@ class FilterBar extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12.0,
                       vertical: 4.0,
-                    ), // Adjust padding to match DropdownButton
+                    ),
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
@@ -82,7 +82,7 @@ class FilterBar extends StatelessWidget {
                             context,
                           ).colorScheme.onSurface.withValues(alpha: 0.38),
                         ),
-                      ), // Mimic DropdownButton underline
+                      ),
                     ),
                     child: Row(
                       children: <Widget>[
