@@ -24,7 +24,7 @@ class ShoppingCartView_1 extends StatelessWidget{
             const SizedBox(width: 150),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(AppTheme.borderRadius),
@@ -35,11 +35,13 @@ class ShoppingCartView_1 extends StatelessWidget{
             )
             ,ElevatedButton(
               onPressed: (
-                
-              ) {},
+              ) {
+                Navigator.pop(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.grey[200],
                 foregroundColor: Colors.black,
+                fixedSize: Size(170, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppTheme.borderRadius),
                 ),
@@ -66,7 +68,33 @@ class ShoppingCartView_1 extends StatelessWidget{
                 bottom: BorderSide(color: Colors.grey[300]!),
               ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 38),
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton.icon(
+              label: const Text('fortsätt'),
+                onPressed: (){}, 
+                style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFF3E5F5),
+                foregroundColor: Colors.black,
+                elevation: 0.5,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 24,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            )
+            ],
+          )
           )
         ]
       ),
