@@ -19,78 +19,88 @@ class _ProductCardState extends State<ProductCard> {
   void _onCardTap() {
     showDialog(
       context: context,
-      builder: (c) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-        side: BorderSide(
-        color: Colors.deepPurple.shade100,
-        width: 0.5,
-        ),
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-        Expanded(
-          child: Text(
-          widget.product.name,
-          style: AppTheme.textTheme.headlineMedium,
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => Navigator.pop(c),
-        ),
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-          width: 200,
-          height: 200,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-            child: widget.handler.getImage(widget.product),
-          ),
-          ),
-          const SizedBox(height: AppTheme.paddingMedium),
-          SizedBox(
-          width: 350,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            Text(
-              'Beskrivning:',
-              style: AppTheme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+      builder:
+          (c) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+              side: BorderSide(color: Colors.deepPurple.shade100, width: 0.5),
             ),
-            const SizedBox(height: AppTheme.paddingSmall),
-            Text(
-              widget.handler.getDetail(widget.product)?.description ??
-                'Ingen beskrivning tillgänglig.',
-              style: AppTheme.textTheme.bodyLarge,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.product.name,
+                    style: AppTheme.textTheme.headlineMedium,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(c),
+                ),
+              ],
             ),
-            if (widget.handler.getDetail(widget.product)?.origin != null &&
-              widget.handler.getDetail(widget.product)!.origin.isNotEmpty) ...[
-              const SizedBox(height: AppTheme.paddingMedium),
-              Text(
-              'Ursprung:',
-              style: AppTheme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    height: 200,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        AppTheme.borderRadius,
+                      ),
+                      child: widget.handler.getImage(widget.product),
+                    ),
+                  ),
+                  const SizedBox(height: AppTheme.paddingMedium),
+                  SizedBox(
+                    width: 350,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Beskrivning:',
+                          style: AppTheme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.paddingSmall),
+                        Text(
+                          widget.handler
+                                  .getDetail(widget.product)
+                                  ?.description ??
+                              'Ingen beskrivning tillgänglig.',
+                          style: AppTheme.textTheme.bodyLarge,
+                        ),
+                        if (widget.handler.getDetail(widget.product)?.origin !=
+                                null &&
+                            widget.handler
+                                .getDetail(widget.product)!
+                                .origin
+                                .isNotEmpty) ...[
+                          const SizedBox(height: AppTheme.paddingMedium),
+                          Text(
+                            'Ursprung:',
+                            style: AppTheme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: AppTheme.paddingSmall),
+                          Text(
+                            widget.handler.getDetail(widget.product)!.origin,
+                            style: AppTheme.textTheme.bodyLarge,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: AppTheme.paddingSmall),
-              Text(
-              widget.handler.getDetail(widget.product)!.origin,
-              style: AppTheme.textTheme.bodyLarge,
-              ),
-            ],
-            ],
+            ),
           ),
-          ),
-        ],
-        ),
-      ),
-      ),
     );
   }
 
@@ -198,9 +208,7 @@ class _ImageFavoritePriceRow extends StatelessWidget {
                 ),
                 onPressed: () => handler.toggleFavorite(product),
               ),
-              const SizedBox(
-                height: 75,
-              ), // Retain this small space after the icon
+              const SizedBox(height: 75),
               Text(
                 '${product.price.toStringAsFixed(2).replaceAll('.', ',')} '
                 '${product.unit}',
@@ -245,7 +253,7 @@ class _DescriptionMerInfo extends StatelessWidget {
         Expanded(
           child: Text(
             detail?.description ?? '',
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyLarge,
             maxLines: 3, // nån rad färre i kortet
             overflow: TextOverflow.ellipsis,
           ),

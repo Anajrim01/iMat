@@ -13,7 +13,7 @@ class AppTheme {
   static const double borderRadiusHuge = 32.0;
 
   static ColorScheme colorScheme = ColorScheme.fromSeed(seedColor: Colors.white, 
-    primary: Color(0xFF56D05C), secondary: Color(0xFFF3E5F5),
+    primary: Color(0xFF56D05C), secondary: Color(0xFFF3E5F5)
   );
 
   static const TextTheme textTheme = TextTheme(
