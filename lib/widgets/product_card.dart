@@ -5,6 +5,7 @@ import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 
 // TODO: the detail view of each product should also have a "lägg till" knapp
+// TODO: add "stäng" text next to close button on product info card
 
 class ProductCard extends StatefulWidget {
   final Product product;
