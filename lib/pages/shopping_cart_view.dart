@@ -3,8 +3,8 @@ import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:provider/provider.dart';
 
-class ShoppingCartView_1 extends StatelessWidget{
-  const ShoppingCartView_1({super.key});
+class ShoppingCartView extends StatelessWidget{
+  const ShoppingCartView({super.key});
 
   @override
   Widget build(BuildContext context){
@@ -73,7 +73,7 @@ class ShoppingCartView_1 extends StatelessWidget{
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton.icon(
-              label: const Text('fortsätt'),
+              label: const Text('Fortsätt'),
                 onPressed: (){}, 
                 style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF3E5F5),

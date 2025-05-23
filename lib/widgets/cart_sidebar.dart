@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
+import 'package:imat_app/pages/shopping_cart_view.dart';
 
 class CartSidebar extends StatelessWidget {
   final ImatDataHandler handler;
@@ -37,30 +38,38 @@ class CartSidebar extends StatelessWidget {
                 );
               },
             ),
-            ),
-            ElevatedButton.icon(
+          ),
+          ElevatedButton.icon(
             // TODO: Add a checkout page
-            onPressed: () => handler.placeOrder(),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShoppingCartView(),
+                ),
+              );
+            },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(48),
               backgroundColor: AppTheme.colorScheme.secondary,
               foregroundColor: Colors.black,
-              textStyle: Theme.of(
-              context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+              textStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
               shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-              side: BorderSide(
-                color: Colors.deepPurple.shade100,
-                width: 0.5,
-              ), // Light purple border
+                borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                side: BorderSide(
+                  color: Colors.deepPurple.shade100,
+                  width: 0.5,
+                ), // Light purple border
               ),
             ),
             icon: const Icon(Icons.shopping_cart),
             label: const Text('Gå till kassan'),
-            ),
-          ],
           ),
+        ],
+      ),
     );
   }
 }

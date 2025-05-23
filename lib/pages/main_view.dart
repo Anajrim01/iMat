@@ -3,7 +3,6 @@ import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/pages/order_history_view.dart';
-import 'package:imat_app/pages/shopping_cart_view_1.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/widgets/cart_sidebar.dart';
 import 'package:imat_app/widgets/category_sidebar.dart';
