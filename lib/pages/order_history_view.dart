@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/model/imat/order.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:imat_app/widgets/shared/custom_appbar.dart';
 import 'package:imat_app/widgets/shared/cart_sidebar.dart';
 import 'package:imat_app/widgets/order_history/nav_bar.dart';
@@ -30,8 +29,12 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        onLoginPressed: () {
-          // Handle login action
+        onSearchSubmitted: (query) {
+          Navigator.pushReplacementNamed(
+            context,
+            '/',
+            arguments: {'searchQuery': query},
+          );
         },
       ),
       body: Column(
@@ -41,8 +44,11 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
           OrderHistoryNavigationBar(
             onShopPressed: () => Navigator.pushNamed(context, '/'),
             onFavoritesPressed: () {
-              _saveBoolValue('showFavorites', true);
-              Navigator.pushNamed(context, '/');
+              Navigator.pushReplacementNamed(
+                context,
+                '/',
+                arguments: {'showFavorites': true},
+              );
             },
           ),
 
@@ -156,10 +162,5 @@ class _OrderHistoryViewState extends State<OrderHistoryView> {
     }
 
     return sortedOrders;
-  }
-
-  void _saveBoolValue(String key, bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(key, value);
   }
 }

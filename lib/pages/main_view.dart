@@ -10,7 +10,6 @@ import 'package:imat_app/widgets/main/product_grid.dart';
 import 'package:imat_app/widgets/main/nav_bar.dart';
 import 'package:imat_app/widgets/main/product_filters.dart';
 import 'package:imat_app/widgets/main/filters_chips.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:imat_app/widgets/shared/custom_appbar.dart';
 
 class MainView extends StatefulWidget {
@@ -23,27 +22,41 @@ class _MainViewState extends State<MainView> {
   String _sortOrder = 'Pris lågt till högt';
   List<dynamic> _categoryFilter = [];
   bool _showFavoritesOnly = false;
+  String _searchQuery = '';
+  bool _isSearching = false;
+
+  void _performSearch(String query) {
+    setState(() {
+      _searchQuery = query;
+      _isSearching = query.isNotEmpty;
+      _showFavoritesOnly = false;
+    });
+  }
 
   @override
-  void initState() {
-    super.initState();
-    _loadSavedValue();
-  }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  void _loadSavedValue() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _showFavoritesOnly = prefs.getBool('showFavorites') ?? false;
-    });
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args == null) return;
+    if (args.containsKey('searchQuery')) {
+      final searchQuery = args['searchQuery'] as String;
+      if (searchQuery.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _performSearch(searchQuery);
+        });
+      }
+    }
 
-    // Favorites shown, don't keep the filter on refresh
-    _saveBoolValue("showFavorites", false);
-  }
-
-  // Shared method to save the value
-  void _saveBoolValue(String key, bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(key, value);
+    // Introduces a bug where search and favorites are both active
+    // This is kept as a feature however to allow searching within favorites
+    if (args.containsKey('showFavorites') && args['showFavorites'] == true) {
+      setState(() {
+        _showFavoritesOnly = true;
+        _categoryFilter = [];
+      });
+    }
   }
 
   @override
@@ -60,9 +73,7 @@ class _MainViewState extends State<MainView> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        onLoginPressed: () {
-          // Handle login button press
-        },
+        onSearchSubmitted: _performSearch,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -95,7 +106,7 @@ class _MainViewState extends State<MainView> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Category sidebar
+                // Category sidebar - SET FILTERING HERE (Maybe pass categories down to the sidebar?)
                 CategorySidebar(
                   showFavorites: _showFavoritesOnly,
                   onSelectAll:
@@ -122,8 +133,10 @@ class _MainViewState extends State<MainView> {
                         ProductFilters(
                           title:
                               _showFavoritesOnly
-                                  ? 'Mina favoritprodukter'
-                                  : 'Alla produkter',
+                                  ? 'Mina favoritprodukter ${_searchQuery.isNotEmpty ? ' - Sökresultat för "$_searchQuery" (${filteredProducts.length} produkter)' : '(${handler.favorites.length}) '}'
+                                  : _searchQuery.isEmpty
+                                  ? 'Alla produkter'
+                                  : 'Sökresultat för "$_searchQuery" (${filteredProducts.length} produkter)',
                           sortOrder: _sortOrder,
                           onSortChanged:
                               (newValue) => setState(() {
@@ -177,8 +190,12 @@ class _MainViewState extends State<MainView> {
                             products: filteredProducts,
                             handler: handler,
                             isFavoritesView: _showFavoritesOnly,
+                            isSearchResult: _isSearching,
+                            searchQuery: _searchQuery,
                             onBrowseAllPressed:
                                 () => setState(() {
+                                  _isSearching = false;
+                                  _searchQuery = '';
                                   _showFavoritesOnly = false;
                                   _categoryFilter = [];
                                 }),
@@ -188,8 +205,6 @@ class _MainViewState extends State<MainView> {
                     ),
                   ),
                 ),
-
-                // Always visible cart sidebar
                 CartSidebar(handler: handler),
               ],
             ),
@@ -201,12 +216,30 @@ class _MainViewState extends State<MainView> {
 
   // Apply sorting and filtering to the products
   List<Product> _applyFilters(ImatDataHandler handler) {
+    // DEBUG output for filters
+    // TODO: Remove in production
+    print('Applying filters:');
+    print('Sort order: $_sortOrder');
+    print('Category filter: $_categoryFilter');
+    print('Show favorites only: $_showFavoritesOnly');
+    print('Search query: $_searchQuery');
+    print('Is searching: $_isSearching');
     var list =
         _showFavoritesOnly
             ? handler.favorites.toList()
             : handler.products.toList();
 
-    if (_categoryFilter.isNotEmpty) {
+    if (_isSearching && _searchQuery.isNotEmpty) {
+      final lowerQuery = _searchQuery.toLowerCase();
+      list =
+          list
+              .where(
+                (p) =>
+                    p.name.toLowerCase().contains(lowerQuery) ||
+                    p.category.toString().toLowerCase().contains(lowerQuery),
+              )
+              .toList();
+    } else if (_categoryFilter.isNotEmpty) {
       list = list.where((p) => _categoryFilter.contains(p.category)).toList();
     }
 

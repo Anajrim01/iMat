@@ -4,9 +4,6 @@ import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 
-// TODO: the detail view of each product should also have a "lägg till" knapp
-// TODO: add "stäng" text next to close button on product info card
-
 class ProductCard extends StatefulWidget {
   final Product product;
   final ImatDataHandler handler;
@@ -19,92 +16,138 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   bool _isHovered = false;
 
-  void _onCardTap() {
+  void _showProductDetailsDialog() {
     showDialog(
       context: context,
-      builder:
-          (c) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-              side: BorderSide(color: Colors.deepPurple.shade100, width: 0.5),
-            ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.product.name,
-                    style: AppTheme.textTheme.headlineMedium,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(c),
-                ),
-              ],
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 200,
-                    height: 200,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadius,
-                      ),
-                      child: widget.handler.getImage(widget.product),
-                    ),
-                  ),
-                  const SizedBox(height: AppTheme.paddingMedium),
-                  SizedBox(
-                    width: 350,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Beskrivning:',
-                          style: AppTheme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: AppTheme.paddingSmall),
-                        Text(
-                          widget.handler
-                                  .getDetail(widget.product)
-                                  ?.description ??
-                              'Ingen beskrivning tillgänglig.',
-                          style: AppTheme.textTheme.bodyLarge,
-                        ),
-                        if (widget.handler.getDetail(widget.product)?.origin !=
-                                null &&
-                            widget.handler
-                                .getDetail(widget.product)!
-                                .origin
-                                .isNotEmpty) ...[
-                          const SizedBox(height: AppTheme.paddingMedium),
-                          Text(
-                            'Ursprung:',
-                            style: AppTheme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: AppTheme.paddingSmall),
-                          Text(
-                            widget.handler.getDetail(widget.product)!.origin,
-                            style: AppTheme.textTheme.bodyLarge,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
+      builder: (c) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+          side: BorderSide(color: Colors.deepPurple.shade100, width: 0.5),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                widget.product.name,
+                style: AppTheme.textTheme.headlineMedium,
               ),
             ),
+            InkWell(
+              onTap: () => Navigator.pop(c), // Close the dialog
+              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.paddingTiny),
+                child: Row(
+                  children: [
+                    const Text('Stäng'),
+                    const SizedBox(width: AppTheme.paddingTiny),
+                    Icon(Icons.close, color: Theme.of(context).iconTheme.color),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 200,
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    AppTheme.borderRadius,
+                  ),
+                  child: widget.handler.getImage(widget.product),
+                ),
+              ),
+              const SizedBox(height: AppTheme.paddingMedium),
+              SizedBox(
+                width: 350,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Beskrivning:',
+                      style: AppTheme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppTheme.paddingSmall),
+                    Text(
+                      widget.handler.getDetail(widget.product)?.description ??
+                          'Ingen beskrivning tillgänglig.',
+                      style: AppTheme.textTheme.bodyLarge,
+                    ),
+                    if (widget.handler.getDetail(widget.product)?.origin !=
+                            null &&
+                        widget.handler
+                            .getDetail(widget.product)!
+                            .origin
+                            .isNotEmpty) ...[
+                      const SizedBox(height: AppTheme.paddingMedium),
+                      Text(
+                        'Ursprung:',
+                        style: AppTheme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: AppTheme.paddingSmall),
+                      Text(
+                        widget.handler.getDetail(widget.product)!.origin,
+                        style: AppTheme.textTheme.bodyLarge,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
           ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(
+              bottom: AppTheme.paddingSmall,
+              right: AppTheme.paddingSmall,
+              left: AppTheme.paddingSmall,
+            ),
+            child: ElevatedButton(
+              onPressed: () {
+                widget.handler
+                    .shoppingCartAdd(ShoppingItem(widget.product, amount: 1));
+                // Hide the dialog after adding to cart?
+                // TODO: Discuss with team if we want to close the dialog
+                Navigator.pop(c);
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+                backgroundColor: AppTheme.colorScheme.secondary,
+                foregroundColor: Colors.black,
+                textStyle: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  side: BorderSide(
+                    color: Colors.deepPurple.shade100,
+                    width: 0.5,
+                  ),
+                ),
+              ),
+              child: const Text('Lägg till'),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  void _onCardTap() {
+    _showProductDetailsDialog();
   }
 
   @override
@@ -119,22 +162,21 @@ class _ProductCardState extends State<ProductCard> {
           curve: Curves.easeOut,
           width: 200,
           decoration: BoxDecoration(
-            boxShadow:
-                _isHovered
-                    ? [
-                      BoxShadow(
-                        color: Colors.deepPurple.withValues(alpha: .2),
-                        blurRadius: 16,
-                        offset: const Offset(0, 8),
-                      ),
-                    ]
-                    : [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: .05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+            boxShadow: _isHovered
+                ? [
+                    BoxShadow(
+                      color: Colors.deepPurple.withAlpha(50), // Adjusted alpha
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(12), // Adjusted alpha
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
             borderRadius: BorderRadius.circular(AppTheme.borderRadius),
           ),
           child: Card(
@@ -158,6 +200,7 @@ class _ProductCardState extends State<ProductCard> {
                   _DescriptionMerInfo(
                     product: widget.product,
                     handler: widget.handler,
+                    onMerInfoPressed: _showProductDetailsDialog,
                   ),
                   const SizedBox(height: AppTheme.paddingMedium),
                   _AddToCartButton(
@@ -195,11 +238,9 @@ class _ImageFavoritePriceRow extends StatelessWidget {
           flex: 1,
           child: Column(
             crossAxisAlignment:
-                CrossAxisAlignment
-                    .end, // Align items to the right of this Column
+                CrossAxisAlignment.end, // Align items to the right of this Column
             mainAxisAlignment:
-                MainAxisAlignment
-                    .start, // Stack items at the top of this Column
+                MainAxisAlignment.start, // Stack items at the top of this Column
             children: [
               IconButton(
                 padding: EdgeInsets.zero,
@@ -213,8 +254,7 @@ class _ImageFavoritePriceRow extends StatelessWidget {
               ),
               const SizedBox(height: 75),
               Text(
-                '${product.price.toStringAsFixed(2).replaceAll('.', ',')} '
-                '${product.unit}',
+                '${product.price.toStringAsFixed(2).replaceAll('.', ',')} ${product.unit}',
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.end,
               ),
@@ -243,7 +283,11 @@ class _TitleExtraInfo extends StatelessWidget {
 class _DescriptionMerInfo extends StatelessWidget {
   final Product product;
   final ImatDataHandler handler;
-  const _DescriptionMerInfo({required this.product, required this.handler});
+  final VoidCallback onMerInfoPressed;
+  const _DescriptionMerInfo(
+      {required this.product,
+      required this.handler,
+      required this.onMerInfoPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -264,99 +308,7 @@ class _DescriptionMerInfo extends StatelessWidget {
         const SizedBox(width: AppTheme.paddingSmall),
         // Mer info-knappen
         ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder:
-                  (c) => AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadius,
-                      ),
-                      side: BorderSide(
-                        color: Colors.deepPurple.shade100,
-                        width: 0.5,
-                      ), // Light purple border
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            product.name,
-                            style: AppTheme.textTheme.headlineMedium,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () => Navigator.pop(c),
-                        ),
-                      ],
-                    ),
-                    content: SingleChildScrollView(
-                      child: Column(
-                        // Main column for content
-                        mainAxisSize: MainAxisSize.min,
-                        // Center the content block if AlertDialog is wider
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            // Image container
-                            width: 200,
-                            height: 200,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                AppTheme.borderRadius,
-                              ),
-
-                              child: handler.getImage(product),
-                            ),
-                          ),
-                          const SizedBox(height: AppTheme.paddingMedium),
-                          SizedBox(
-                            // Text content container
-                            width:
-                                350, // Match image width for a columnar layout
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Beskrivning:',
-                                  style: AppTheme.textTheme.titleLarge
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: AppTheme.paddingSmall),
-                                Text(
-                                  detail?.description ??
-                                      'Ingen beskrivning tillgänglig.',
-                                  style: AppTheme.textTheme.bodyLarge,
-                                ),
-                                if (detail?.origin != null &&
-                                    detail!.origin.isNotEmpty) ...[
-                                  const SizedBox(
-                                    height: AppTheme.paddingMedium,
-                                  ),
-                                  Text(
-                                    'Ursprung:',
-                                    style: AppTheme.textTheme.titleLarge
-                                        ?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: AppTheme.paddingSmall),
-                                  Text(
-                                    detail.origin,
-                                    style: AppTheme.textTheme.bodyLarge,
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-            );
-          },
-
+          onPressed: onMerInfoPressed,
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(64, 36),
             backgroundColor: AppTheme.colorScheme.secondary,

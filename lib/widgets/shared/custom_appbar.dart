@@ -1,4 +1,3 @@
-// TODO: Search should display a filtered list of products in the menu below
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
@@ -8,9 +7,13 @@ import 'package:imat_app/model/imat/product.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Function()? onCartPressed;
-  final Function()? onLoginPressed;
+  final Function(String) onSearchSubmitted;
 
-  const CustomAppBar({super.key, this.onCartPressed, this.onLoginPressed});
+  const CustomAppBar({
+    super.key,
+    this.onCartPressed,
+    required this.onSearchSubmitted,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(80);
@@ -84,9 +87,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   void _handleSearch() {
+    widget.onSearchSubmitted(_searchQuery);
     _removeOverlay();
-    _searchController.clear();
     _searchFocusNode.unfocus();
+    // Dont clear search here anymore
+    // as it is more convinient for user to see
+    // what they searched for.
+    // _searchController.clear();
   }
 
   OverlayEntry _createOverlayEntry(List<Product> products) {
@@ -99,7 +106,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
       builder: (context) {
         final screenWidth = MediaQuery.of(context).size.width;
         return GestureDetector(
-          // This GestureDetector captures taps on the entire screen to dismiss the overlay
           onTap: () {
             _removeOverlay();
             _searchFocusNode.unfocus();
@@ -435,7 +441,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
           // Login button
           ElevatedButton.icon(
-            onPressed: widget.onLoginPressed, // TODO: move login logic here?
+            onPressed: () {}, // TODO: Login logic here
             icon: const Icon(Icons.person_outline, size: 24),
             label: const Text(
               'Logga in / Registrera',
