@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
+// TODO: When searching for a product by either clicking enter or on the "sök"-button should display the actual product in the "Handla"-section
 
 class MainNavigationBar extends StatelessWidget {
   final bool showingFavorites;
