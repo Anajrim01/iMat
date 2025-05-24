@@ -52,7 +52,7 @@ Se till att du har följande programvara installerad:
 
 1.  **Klona repot:**
     ```bash
-    git clone [ttps://github.com/BubbaTamer/Project---Design-och-kontruktion-av-grafiska-gr-nssnitt.git
+    git clone https://github.com/BubbaTamer/Project---Design-och-kontruktion-av-grafiska-gr-nssnitt.git
     ```
 
 2.  **Navigera till projektmappen:**
