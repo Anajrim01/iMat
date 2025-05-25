@@ -56,8 +56,8 @@ class FilterBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppTheme.paddingMedium),
-
-          // TODO: Update this to only show sub-categories that are available based on the selected category
+          
+          // TODO: Replace with a more useful purpose.
           // Kategorival
           Expanded(
             flex: 3,
@@ -80,7 +80,7 @@ class FilterBar extends StatelessWidget {
                         bottom: BorderSide(
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.38),
+                          ).colorScheme.onSurface.withAlpha(38),
                         ),
                       ),
                     ),

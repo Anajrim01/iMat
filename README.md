@@ -52,7 +52,7 @@ Se till att du har följande programvara installerad:
 
 1.  **Klona repot:**
     ```bash
-    git clone [ttps://github.com/BubbaTamer/Project---Design-och-kontruktion-av-grafiska-gr-nssnitt.git
+    git clone https://github.com/BubbaTamer/Project---Design-och-kontruktion-av-grafiska-gr-nssnitt.git
     ```
 
 2.  **Navigera till projektmappen:**
@@ -92,33 +92,50 @@ flutter run
 Projektet har följande mappstruktur:
 
 ```
-Project---Design-och-kontruktion-av-grafiska-gr-nssnitt/
-├── lib/
-│   ├── main.dart                 # Appens startpunkt (entrypoint)
-│   ├── app_theme.dart            # Definitioner för färger, padding, textstilar etc.
-│   ├── model/                    # Datamodeller och datahanterare
-│   │   ├── imat_data_handler.dart  # Hanterar logik för IMat-data
-│   │   ├── imat/                   # Dataklasser för Produkt, Kund, Order etc.
-│   │   └── settings.dart           # Inställningar (t.ex. groupId)
-│   ├── pages/
-│   │   └── main_view.dart          # Huvudlayouten med sidofält och grid-vy
-│   └── widgets/                  # Återanvändbara UI-komponenter
-│       ├── category_sidebar.dart   # Sidofält för produktkategorier
-│       ├── filter_bar.dart         # Filteringsalternativ
-│       ├── product_grid.dart       # Grid-vy för produkter
-│       ├── cart_sidebar.dart       # Sidofält för varukorgen
-│       └── product_card.dart       # Produktkort och dess underkomponenter
-├── pubspec.yaml                  # Projektets beroenden och metadata
-└── README.md                     # Denna fil
+└── 📁Project---Design-och-kontruktion-av-grafiska-gr-nssnitt # Root folder for your Flutter project.
+    ├── 📁lib # This is where most of your Dart code lives. The heart of your app.
+    │   ├── app_theme.dart # Defines the visual theme (colors, fonts) for the app.
+    │   ├── main.dart # The main entry point of your Flutter application.
+    │   ├── 📁model # Contains data models (classes) and data handling logic.
+    │   │   ├── imat_data_handler.dart # Likely handles interactions with a backend/API (IMat).
+    │   │   ├── internet_handler.dart # Manages internet connectivity checks or requests.
+    │   │   ├── credit_card.dart # Model for credit card data.
+    │   │   ├── customer.dart # Model for customer data.
+    │   │   ├── order.dart # Model for order data.
+    │   │   ├── product.dart # Model for product data.
+    │   │   ├── shopping_cart.dart # Model/Logic for the shopping cart.
+    │   │   └── user.dart # Model for user data.
+    │   ├── 📁pages # Contains the main screens or views of your application.
+    │   │   ├── main_view.dart # The primary view/screen (e.g., product Browse).
+    │   │   ├── order_history_view.dart # Screen to display past orders.
+    │   │   └── shopping_cart_view.dart # Screen for the shopping cart.
+    │   └── 📁widgets # Contains reusable UI components (widgets).
+    │       ├── 📁main # Widgets used in the main_view.
+    │       │   ├── category_sidebar.dart # Sidebar for product categories.
+    │       │   ├── product_card.dart # A card to display a single product.
+    │       │   └── product_grid.dart # Grid layout to display multiple products.
+    │       ├── 📁order_history # Widgets used in the order_history_view.
+    │       │   └── order_card.dart # A card to display a single order.
+    │       └── 📁shared # Widgets that can be used across multiple pages.
+    │           ├── cart_sidebar.dart # Sidebar for the shopping cart.
+    │           └── custom_appbar.dart # A custom application bar.
+    ├── pubspec.yaml # Project metadata, dependencies (packages), and asset declarations.
+    ├── pubspec.lock # Automatically generated, lists exact versions of all dependencies.
+    └── analysis_options.yaml # Configuration for Dart static analysis (linter rules).
 ```
 
 ### Skärmdumpar
 
 #### Startsida
-![image](https://github.com/user-attachments/assets/f966d28a-568a-4c06-9ef8-062f3402f18c)
+![image](https://github.com/user-attachments/assets/3266486d-6036-48c9-b9f0-4753bc073aaf)
+
 
 #### Tidigare Beställningar
-![image](https://github.com/user-attachments/assets/8544903b-60b7-4fab-a6ac-514ecd16f8c8)
+![image](https://github.com/user-attachments/assets/502e4157-ec85-4630-acc1-d8674d5d9ba1)
+
+
+#### Mina Favoriter
+![image](https://github.com/user-attachments/assets/965f6d69-8c50-41cf-aab2-63dc993b8a0c)
 
 
 
