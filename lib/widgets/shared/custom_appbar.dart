@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
+import 'package:imat_app/pages/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/model/imat/product.dart';
@@ -237,28 +238,27 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                                     amount: 1,
                                                   ),
                                                 );
-                                                // TODO: Discuss with group
                                                 // Show confirmation message (feedback)
-                                                // ScaffoldMessenger.of(
-                                                //   context,
-                                                // ).showSnackBar(
-                                                //   SnackBar(
-                                                //     content: Text(
-                                                //       '${product.name} tillagd i kundvagnen',
-                                                //       style: const TextStyle(
-                                                //         fontSize: 16,
-                                                //       ),
-                                                //     ),
-                                                //     behavior:
-                                                //         SnackBarBehavior.floating,
-                                                //     shape: RoundedRectangleBorder(
-                                                //       borderRadius:
-                                                //           BorderRadius.circular(
-                                                //             AppTheme.borderRadius,
-                                                //           ),
-                                                //     ),
-                                                //   ),
-                                                // );
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      '${product.name} tillagd i kundvagnen',
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    behavior:
+                                                        SnackBarBehavior.floating,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            AppTheme.borderRadius,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                );
                                               },
                                               icon: const Icon(
                                                 Icons.add_shopping_cart,
@@ -440,8 +440,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
           const SizedBox(width: 120),
 
           // Login button
+          // TODO: Update this based on user authentication state
           ElevatedButton.icon(
-            onPressed: () {}, // TODO: Login logic here
+            onPressed:() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginView(),
+                ),
+              );
+            },
             icon: const Icon(Icons.person_outline, size: 24),
             label: const Text(
               'Logga in / Registrera',

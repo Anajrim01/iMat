@@ -31,12 +31,14 @@ class CategorySidebar extends StatelessWidget {
           ),
           const Divider(),
 
-          ...categories.map((cat){ final isSelected = selectedCategory.contains(cat);
+          ...categories.map((cat) {
+            final isSelected = selectedCategory.contains(cat);
             return ListTile(
               selected: isSelected,
               title: Text(cat.toString().split(".").last),
               trailing: isSelected ? const Icon(Icons.check) : null,
-              onTap: () { final updated= List<dynamic>.from(selectedCategory);
+              onTap: () {
+                final updated = List<dynamic>.from(selectedCategory);
                 if (isSelected) {
                   updated.remove(cat);
                 } else {
@@ -45,7 +47,7 @@ class CategorySidebar extends StatelessWidget {
                 onCategorySelected(updated);
               },
             );
-          }).toList(),
+          }),
         ],
       ),
     );

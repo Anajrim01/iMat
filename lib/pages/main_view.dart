@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/model/imat/product.dart';
-import 'package:imat_app/pages/login_view.dart';
 import 'package:imat_app/pages/order_history_view.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/widgets/shared/cart_sidebar.dart';
@@ -73,14 +72,7 @@ class _MainViewState extends State<MainView> {
             .toList();
 
     return Scaffold(
-      /*appBar: CustomAppBar(
-        onCartPressed: () {
-          // Handle cart button press
-        },
-        onLoginPressed: () {
-          // Handle login button press
-        },
-      ),*/
+      appBar: CustomAppBar(onSearchSubmitted: _performSearch),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -112,7 +104,7 @@ class _MainViewState extends State<MainView> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Category sidebar - SET FILTERING HERE (Maybe pass categories down to the sidebar?)
+                // TODO: Category sidebar - SET FILTERING HERE (Maybe pass categories down to the sidebar?)
                 CategorySidebar(
                   showFavorites: _showFavoritesOnly,
                   onSelectAll:
@@ -125,10 +117,8 @@ class _MainViewState extends State<MainView> {
                         _showFavoritesOnly = true;
                         _categoryFilter = [];
                       }),
-                  categories: handler.products
-                      .map((p) => p.category)
-                      .toSet()
-                      .toList(),
+                  categories:
+                      handler.products.map((p) => p.category).toSet().toList(),
                   selectedCategory: _categoryFilter,
                   onCategorySelected: (updatedCategories) {
                     setState(() {
@@ -232,14 +222,6 @@ class _MainViewState extends State<MainView> {
 
   // Apply sorting and filtering to the products
   List<Product> _applyFilters(ImatDataHandler handler) {
-    // DEBUG output for filters
-    // TODO: Remove in production
-    /*print('Applying filters:');
-    print('Sort order: $_sortOrder');
-    print('Category filter: $_categoryFilter');
-    print('Show favorites only: $_showFavoritesOnly');
-    print('Search query: $_searchQuery');
-    print('Is searching: $_isSearching');*/
     var list =
         _showFavoritesOnly
             ? handler.favorites.toList()
