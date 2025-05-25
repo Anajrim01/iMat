@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imat_app/pages/main_view.dart';
 
 
 
@@ -17,9 +18,10 @@ class _LoginViewState extends State<LoginView> {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    if (email == "test@example.com" && password == "1234") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Inloggning lyckades!")),
+    if (email == "test" && password == "1234") {
+       Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MainView()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
