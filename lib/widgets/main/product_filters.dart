@@ -5,9 +5,6 @@ class ProductFilters extends StatelessWidget {
   final String title;
   final String sortOrder;
   final Function(String) onSortChanged;
-  final String? selectedCategory;
-  final List<String> availableCategories;
-  final Function(String?) onCategoryChanged;
   final bool showFavoritesOnly;
   final Function(bool) onShowFavoritesChanged;
 
@@ -15,9 +12,6 @@ class ProductFilters extends StatelessWidget {
     required this.title,
     required this.sortOrder,
     required this.onSortChanged,
-    required this.selectedCategory,
-    required this.availableCategories,
-    required this.onCategoryChanged,
     required this.showFavoritesOnly,
     required this.onShowFavoritesChanged,
     super.key,
@@ -70,14 +64,14 @@ class ProductFilters extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 12),
-            Expanded(
-              child: _buildDropdown(
-                selectedCategory ?? 'Alla',
-                ['Alla', ...availableCategories],
-                (value) => onCategoryChanged(value == 'Alla' ? null : value),
-                isExpanded: true,
-              ),
-            ),
+            // Expanded(
+            //   child: _buildDropdown(
+            //     selectedCategory ?? 'Alla',
+            //     ['Alla', ...availableCategories],
+            //     (value) => onCategoryChanged(value == 'Alla' ? null : value),
+            //     isExpanded: true,
+            //   ),
+            // ),
             const Spacer(),
 
             // Favorites toggle

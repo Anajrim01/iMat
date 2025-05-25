@@ -9,7 +9,6 @@ import 'package:imat_app/widgets/main/category_sidebar.dart';
 import 'package:imat_app/widgets/main/product_grid.dart';
 import 'package:imat_app/widgets/main/nav_bar.dart';
 import 'package:imat_app/widgets/main/product_filters.dart';
-import 'package:imat_app/widgets/main/filters_chips.dart';
 import 'package:imat_app/widgets/shared/custom_appbar.dart';
 
 class MainView extends StatefulWidget {
@@ -64,13 +63,6 @@ class _MainViewState extends State<MainView> {
     final handler = context.watch<ImatDataHandler>();
     final filteredProducts = _applyFilters(handler);
 
-    // Get unique categories for the dropdown
-    final uniqueCategories =
-        handler.products
-            .map((p) => p.category.toString().split('.').last)
-            .toSet()
-            .toList();
-
     return Scaffold(
       appBar: CustomAppBar(onSearchSubmitted: _performSearch),
       body: Column(
@@ -104,25 +96,16 @@ class _MainViewState extends State<MainView> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // TODO: Category sidebar - SET FILTERING HERE (Maybe pass categories down to the sidebar?)
                 CategorySidebar(
-                  showFavorites: _showFavoritesOnly,
-                  onSelectAll:
-                      () => setState(() {
-                        _showFavoritesOnly = false;
-                        _categoryFilter = [];
-                      }),
-                  onSelectFavorites:
-                      () => setState(() {
-                        _showFavoritesOnly = true;
-                        _categoryFilter = [];
-                      }),
                   categories:
                       handler.products.map((p) => p.category).toSet().toList(),
                   selectedCategory: _categoryFilter,
                   onCategorySelected: (updatedCategories) {
                     setState(() {
                       _categoryFilter = updatedCategories;
+                      _isSearching = false; // reset search state
+                      _searchQuery = ''; // reset search query
+                      _showFavoritesOnly = false; // reset favorites state
                     });
                   },
                 ),
@@ -138,57 +121,35 @@ class _MainViewState extends State<MainView> {
                         // Filters section
                         ProductFilters(
                           title:
-                              _showFavoritesOnly
-                                  ? 'Mina favoritprodukter ${_searchQuery.isNotEmpty ? ' - Sökresultat för "$_searchQuery" (${filteredProducts.length} produkter)' : '(${handler.favorites.length}) '}'
+                              _categoryFilter.isNotEmpty
+                                  ? 'Produkter i ${_categoryFilter[0]} (${filteredProducts.length} st)' // TODO: Proper naming
+                                  : _showFavoritesOnly
+                                  ? 'Mina favoritprodukter${_searchQuery.isNotEmpty ? ' - Sökning: "$_searchQuery"' : ''} (${filteredProducts.length} st)'
                                   : _searchQuery.isEmpty
-                                  ? 'Alla produkter'
-                                  : 'Sökresultat för "$_searchQuery" (${filteredProducts.length} produkter)',
+                                  ? 'Alla produkter (${filteredProducts.length} st)'
+                                  : 'Sökresultat för "$_searchQuery" (${filteredProducts.length} st)',
                           sortOrder: _sortOrder,
                           onSortChanged:
                               (newValue) => setState(() {
                                 _sortOrder = newValue;
                               }),
-                          selectedCategory:
-                              _categoryFilter.isEmpty
-                                  ? null
-                                  : _categoryFilter.first
-                                      .toString()
-                                      .split('.')
-                                      .last,
-                          availableCategories: uniqueCategories,
-                          onCategoryChanged:
-                              (newValue) => setState(() {
-                                if (newValue == null) {
-                                  _categoryFilter = [];
-                                } else {
-                                  _categoryFilter =
-                                      handler.products
-                                          .map((p) => p.category)
-                                          .toSet()
-                                          .toList()
-                                          .where(
-                                            (c) =>
-                                                c.toString().split('.').last ==
-                                                newValue,
-                                          )
-                                          .toList();
-                                }
-                              }),
                           showFavoritesOnly: _showFavoritesOnly,
                           onShowFavoritesChanged:
                               (value) => setState(() {
                                 _showFavoritesOnly = value;
+                                _categoryFilter = []; // reset category filter
                               }),
                         ),
 
                         const SizedBox(height: 16),
-                        FiltersChips(
-                          categoryFilters: _categoryFilter,
-                          onRemoveFilter:
-                              (categoryValue) => setState(() {
-                                _categoryFilter.remove(categoryValue);
-                              }),
-                        ),
+                        // TODO: FiltersChips for whatever new thing?
+                        // FiltersChips(
+                        //   categoryFilters: _categoryFilter,
+                        //   onRemoveFilter:
+                        //       (categoryValue) => setState(() {
+                        //         _categoryFilter.remove(categoryValue);
+                        //       }),
+                        // ),
 
                         // Product grid
                         Expanded(
