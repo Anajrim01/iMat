@@ -250,11 +250,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                                       ),
                                                     ),
                                                     behavior:
-                                                        SnackBarBehavior.floating,
+                                                        SnackBarBehavior
+                                                            .floating,
                                                     shape: RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                            AppTheme.borderRadius,
+                                                            AppTheme
+                                                                .borderRadius,
                                                           ),
                                                     ),
                                                   ),
@@ -442,14 +444,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
           // Login button
           // TODO: Update this based on user authentication state
           ElevatedButton.icon(
-            onPressed:() {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginView(),
-                ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: const LoginView(),
+                    ),
+                  );
+                },
               );
             },
+
             icon: const Icon(Icons.person_outline, size: 24),
             label: const Text(
               'Logga in / Registrera',
