@@ -73,14 +73,14 @@ class _MainViewState extends State<MainView> {
             .toList();
 
     return Scaffold(
-      appBar: CustomAppBar(
+      /*appBar: CustomAppBar(
         onCartPressed: () {
           // Handle cart button press
         },
         onLoginPressed: () {
           // Handle login button press
         },
-      ),
+      ),*/
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -234,12 +234,12 @@ class _MainViewState extends State<MainView> {
   List<Product> _applyFilters(ImatDataHandler handler) {
     // DEBUG output for filters
     // TODO: Remove in production
-    print('Applying filters:');
+    /*print('Applying filters:');
     print('Sort order: $_sortOrder');
     print('Category filter: $_categoryFilter');
     print('Show favorites only: $_showFavoritesOnly');
     print('Search query: $_searchQuery');
-    print('Is searching: $_isSearching');
+    print('Is searching: $_isSearching');*/
     var list =
         _showFavoritesOnly
             ? handler.favorites.toList()

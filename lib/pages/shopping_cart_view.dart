@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
+import 'package:imat_app/widgets/main/buyout_cart_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/model/imat/shopping_cart.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
-import 'package:imat_app/widgets/main/shopcart_product_grid.dart';
 
 class ShoppingCartView extends StatefulWidget {
   const ShoppingCartView({super.key});
@@ -18,8 +18,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
   @override
   Widget build(BuildContext context){
     final handler = context.watch<ImatDataHandler>();
-    final products = handler.products;
-
+    
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -198,7 +197,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
         
         ),
         Expanded(
-          child: ShopcartProductGrid(products: products, handler: handler)
+          child: BuyoutCartBar(handler: handler)
         )
       ]
       ),
