@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
+import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:imat_app/model/imat/shopping_cart.dart';
+import 'package:imat_app/model/imat/shopping_item.dart';
+import 'package:imat_app/widgets/main/shopcart_product_grid.dart';
 
-class ShoppingCartView extends StatelessWidget{
+class ShoppingCartView extends StatefulWidget {
   const ShoppingCartView({super.key});
 
   @override
+  State<ShoppingCartView> createState() => _ShoppingCartViewState();
+}
+
+class _ShoppingCartViewState extends State<ShoppingCartView>{
+  @override
   Widget build(BuildContext context){
     final handler = context.watch<ImatDataHandler>();
+    final products = handler.products;
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -68,23 +79,46 @@ class ShoppingCartView extends StatelessWidget{
                 bottom: BorderSide(color: Colors.grey[300]!),
               ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 38),
             child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30, 20, 250, 20),
+                child: ElevatedButton.icon(
+                  label: const Text('tillbaka'),
+                  onPressed: (){}, 
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF3E5F5),
+                    foregroundColor: Colors.black,
+                    elevation: 0.5,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                      ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                    side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                ),
+              )
+              ),
               ElevatedButton.icon(
-              label: const Text('Fortsätt'),
+              label: const Text('Varukorg'),
                 onPressed: (){}, 
                 style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF3E5F5),
                 foregroundColor: Colors.black,
                 elevation: 0.5,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 24,
+                  horizontal: 43,
+                  vertical: 43,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  borderRadius: BorderRadius.circular(0),
                   side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
                 ),
                 textStyle: const TextStyle(
@@ -92,11 +126,81 @@ class ShoppingCartView extends StatelessWidget{
                   fontSize: 16,
                 ),
               ),
+            ),
+            ElevatedButton.icon(
+              label: const Text('Leverans'),
+                onPressed: (){}, 
+                style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFF3E5F5),
+                foregroundColor: Colors.black,
+                elevation: 0.5,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 43,
+                  vertical: 43,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                  side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            ElevatedButton.icon(
+              label: const Text('Betalning'),
+                onPressed: (){}, 
+                style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFF3E5F5),
+                foregroundColor: Colors.black,
+                elevation: 0.5,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 43,
+                  vertical: 43,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                  side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(290,20,38,20),// vertical: 20, horizontal: 38
+                child: ElevatedButton.icon(
+                  label: const Text('Fortsätt'),
+                  onPressed: (){}, 
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF3E5F5),
+                    foregroundColor: Colors.black,
+                    elevation: 0.5,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                      ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                    side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                ),
+              )
             )
-            ],
-          )
-          )
-        ]
+          ],
+        )
+        
+        ),
+        Expanded(
+          child: ShopcartProductGrid(products: products, handler: handler)
+        )
+      ]
       ),
     );
   }
