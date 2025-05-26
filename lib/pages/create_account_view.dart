@@ -1,55 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
-import 'package:imat_app/pages/main_view.dart';
 
 
 
-class LoginView extends StatelessWidget {
-  final VoidCallback onSwitchToRegister;
+class CreateAccountView extends StatelessWidget {
+  final VoidCallback onSwitchToLogin;
 
-  const LoginView({super.key, required this.onSwitchToRegister});
+  CreateAccountView({super.key, required this.onSwitchToLogin});
+
+  final _emailController = TextEditingController();
+  final _ssnController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final _emailController = TextEditingController();
-    final _passwordController = TextEditingController();
-
-    void _login() {
-      final email = _emailController.text;
-      final password = _passwordController.text;
-
-      if (email == "test" && password == "1234") {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainView()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Fel e-post eller lösenord")),
-        );
-      }
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Container(
             width: 500,
-            padding: const EdgeInsets.all(AppTheme.paddingHuge),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+              borderRadius: BorderRadius.circular(16),
               color: Colors.grey[100],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Rubrik + Stäng
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Logga in",
+                      "Skapa ditt konto",
                       style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                     IconButton(
@@ -59,31 +43,11 @@ class LoginView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-
-                // Knapp-rad
+               
                 Row(
                   children: [
-                    ElevatedButton(
-                      onPressed: () {}, // Aktiv knapp
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.paddingLarge,
-                          vertical: AppTheme.paddingMedium,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                        ),
-                        textStyle: AppTheme.textTheme.headlineSmall,
-                      ),
-                      child: const Text(
-                        "Logga in",
-                        style: TextStyle(color: Colors.white), // vit text
-                      ),
-                    ),
-                    const SizedBox(width: AppTheme.paddingLarge),
                     OutlinedButton(
-                      onPressed: onSwitchToRegister,
+                      onPressed: onSwitchToLogin,
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppTheme.colorScheme.primary),
                         padding: const EdgeInsets.symmetric(
@@ -96,23 +60,57 @@ class LoginView extends StatelessWidget {
                         textStyle: AppTheme.textTheme.headlineSmall,
                       ),
                       child: Text(
-                        "Skapa konto",
+                        "Logga in",
                         style: TextStyle(color: AppTheme.colorScheme.primary),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () {}, // Lägg till logik här
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.paddingLarge,
+                          vertical: AppTheme.paddingMedium,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                        ),
+                        textStyle: AppTheme.textTheme.headlineSmall,
+                      ),
+                      child: const Text(
+                        "Skapa konto",
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 32),
 
-                // E-post
+                
                 _buildField(
                   label: "E-postadress/Användarnamn",
                   controller: _emailController,
                   hintText: "name@gmail.com",
                 ),
+                const SizedBox(height: 8),
+                _buildBulletText("Detta kommer vara ditt användar-id när du loggar in"),
+
                 const SizedBox(height: 20),
 
-                // Lösenord
+                
+                _buildField(
+                  label: "Personnummer - ",
+                  trailingLabel: "Valfritt",
+                  controller: _ssnController,
+                  hintText: "YYYYMMDD-XXXX",
+                ),
+                const SizedBox(height: 8),
+                _buildBulletText("Med ditt personnummer hämtar vi din adress automatiskt när du ska beställa hem mat."),
+
+                const SizedBox(height: 20),
+
+                
                 _buildField(
                   label: "Lösenord",
                   controller: _passwordController,
@@ -123,7 +121,9 @@ class LoginView extends StatelessWidget {
                 const SizedBox(height: 32),
                 Center(
                   child: ElevatedButton(
-                    onPressed: _login,
+                    onPressed: () {
+                      // TODO: Implementera konto skapande logiuk
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.colorScheme.primary,
                       padding: const EdgeInsets.symmetric(
@@ -136,7 +136,7 @@ class LoginView extends StatelessWidget {
                       textStyle: AppTheme.textTheme.bodyLarge,
                     ),
                     child: const Text(
-                      "Logga in",
+                      "Skapa konto",
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
@@ -151,6 +151,7 @@ class LoginView extends StatelessWidget {
 
   Widget _buildField({
     required String label,
+    String? trailingLabel,
     required TextEditingController controller,
     String? hintText,
     bool obscure = false,
@@ -158,7 +159,16 @@ class LoginView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 16)),
+        Row(
+          children: [
+            Text(label, style: const TextStyle(fontSize: 16)),
+            if (trailingLabel != null)
+              Text(
+                trailingLabel,
+                style: const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
+          ],
+        ),
         const SizedBox(height: 8),
         TextField(
           controller: controller,
@@ -181,7 +191,15 @@ class LoginView extends StatelessWidget {
       ],
     );
   }
+
+  Widget _buildBulletText(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text("• ", style: TextStyle(fontSize: 16)),
+        Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
+      ],
+    );
+  }
 }
-
-
 
