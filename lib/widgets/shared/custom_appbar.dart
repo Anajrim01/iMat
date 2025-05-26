@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
+import 'package:imat_app/pages/AuthDialogView.dart';
 import 'package:imat_app/pages/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
@@ -473,13 +474,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: const LoginView(),
-                    ),
-                  );
+                  return const AuthDialog(); 
                 },
               );
             },
