@@ -17,11 +17,12 @@ class CategorySidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 200,
-      child: ListView(
-        padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Title (not scrollable)
           Padding(
-            padding: const EdgeInsets.only(bottom: 1),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 1),
             child: Text(
               'Kategorier',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -30,36 +31,48 @@ class CategorySidebar extends StatelessWidget {
               ),
             ),
           ),
-          const Divider(thickness: 2),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: _buildCategoryCard(
-              categoryName: "Alla",
-              isSelected: selectedCategory.isEmpty,
-              onTap: () {
-                onCategorySelected([]);
-              },
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(thickness: 2),
+          ),
+
+          // Scrollable list of categories
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: _buildCategoryCard(
+                    categoryName: "Alla",
+                    isSelected: selectedCategory.isEmpty,
+                    onTap: () {
+                      onCategorySelected([]);
+                    },
+                  ),
+                ),
+                ...categories.map((cat) {
+                  final categoryName = cat.toString().split(".").last;
+                  final isSelected = selectedCategory.contains(cat);
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: _buildCategoryCard(
+                      categoryName: categoryName,
+                      isSelected: isSelected,
+                      onTap: () {
+                        if (isSelected) {
+                          onCategorySelected([]);
+                        } else {
+                          onCategorySelected([cat]);
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
-          ...categories.map((cat) {
-            final categoryName = cat.toString().split(".").last;
-            final isSelected = selectedCategory.contains(cat);
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: _buildCategoryCard(
-                categoryName: categoryName,
-                isSelected: isSelected,
-                onTap: () {
-                  if (isSelected) {
-                    onCategorySelected([]);
-                  } else {
-                    onCategorySelected([cat]);
-                  }
-                },
-              ),
-            );
-          }),
         ],
       ),
     );
@@ -94,7 +107,6 @@ class CategorySidebar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Category image
             Image.asset(
               imagePath,
               height: 120,
@@ -130,25 +142,12 @@ class CategorySidebar extends StatelessWidget {
   }
 
   String _getCategoryImagePath(String categoryName) {
-    switch (categoryName.toLowerCase()) {
-      case 'melons':
-        return 'images/categories/melons.jpg';
-      case 'flour_sugar_salt':
-        return 'images/categories/flour_sugar_salt.jpg';
-      case 'meat':
-        return 'images/categories/meat.jpg';
-      case 'dairies':
-        return 'images/categories/dairies.jpg';
-      case 'vegetable_fruit':
-        return 'images/categories/vegetable_fruit.jpg';
-      default:
-        return '';
-    }
+    final normalizedCategoryName = categoryName.toLowerCase();
+    return 'assets/images/categories/$normalizedCategoryName.jpg';
   }
 
   IconData _getCategoryIcon(String categoryName) {
     switch (categoryName.toLowerCase()) {
-      // Add icons for specific categories
       default:
         return Icons.category;
     }

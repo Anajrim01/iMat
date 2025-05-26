@@ -82,6 +82,48 @@ class _ProductCardState extends State<ProductCard> {
                           'Ingen beskrivning tillgänglig.',
                       style: AppTheme.textTheme.bodyLarge,
                     ),
+                    if (widget.product.isEcological) ...[
+                      const SizedBox(height: AppTheme.paddingMedium),
+                      Container(
+                        padding: const EdgeInsets.all(AppTheme.paddingSmall),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade50,
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                          border: Border.all(color: Colors.green.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.eco,
+                              color: Colors.green,
+                              size: 24,
+                            ),
+                            const SizedBox(width: AppTheme.paddingSmall),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Ekologisk produkt',
+                                    style: AppTheme.textTheme.titleMedium?.copyWith(
+                                      color: Colors.green.shade800,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    'Denna produkt är ekologiskt odlad enligt EU:s regelverk för ekologisk produktion.',
+                                    style: AppTheme.textTheme.bodyMedium?.copyWith(
+                                      color: Colors.green.shade900,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     if (widget.handler.getDetail(widget.product)?.origin !=
                             null &&
                         widget.handler
@@ -217,7 +259,6 @@ class _ProductCardState extends State<ProductCard> {
   }
 }
 
-// Spara varje underklass i samma fil för enkelhet – övriga justeras på samma sätt:
 class _ImageFavoritePriceRow extends StatelessWidget {
   final Product product;
   final ImatDataHandler handler;
@@ -226,21 +267,48 @@ class _ImageFavoritePriceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment:
-          CrossAxisAlignment.start, // Align children to the top of the Row
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 1,
-          child: AspectRatio(aspectRatio: 1, child: handler.getImage(product)),
+          flex: 1,  
+          child: Stack(
+            children: [
+              // Product image
+              SizedBox(
+                width: 120,
+                height: 120,
+                child: handler.getImage(product),
+              ),
+              
+              // // Eco badge overlay (if ecological)
+              // if (product.isEcological)
+              //   Positioned(
+              //     bottom: 0,
+              //     left: 0,
+              //     child: Container(
+              //       padding: const EdgeInsets.all(4),
+              //       decoration: const BoxDecoration(
+              //         color: Colors.green,
+              //         borderRadius: BorderRadius.only(
+              //           topRight: Radius.circular(8),
+              //         ),
+              //       ),
+              //       child: const Icon(
+              //         Icons.eco,
+              //         color: Colors.white,
+              //         size: 16,
+              //       ),
+              //     ),
+              //   ),
+            ],
+          ),
         ),
         const SizedBox(width: AppTheme.paddingSmall),
         Expanded(
           flex: 1,
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.end, // Align items to the right of this Column
-            mainAxisAlignment:
-                MainAxisAlignment.start, // Stack items at the top of this Column
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
                 padding: EdgeInsets.zero,
@@ -254,7 +322,7 @@ class _ImageFavoritePriceRow extends StatelessWidget {
               ),
               const SizedBox(height: 75),
               Text(
-                '${product.price.toStringAsFixed(2).replaceAll('.', ',')} ${product.unit}',
+                '${product.price.toStringAsFixed(2)} ${product.unit}',
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.end,
               ),
@@ -272,10 +340,53 @@ class _TitleExtraInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      product.name,
-      style: Theme.of(context).textTheme.headlineSmall,
-      overflow: TextOverflow.ellipsis,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            // Product title
+            Expanded(
+              child: Text(
+                product.name,
+                style: Theme.of(context).textTheme.headlineSmall,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            
+            // Ecological badge
+            if (product.isEcological)
+              Tooltip(
+                message: 'Ekologisk produkt',
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.eco,
+                        color: Colors.white,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        'Eko',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -403,6 +403,31 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ),
                         ),
                       ),
+                      
+                      // Clear search button (X)
+                      if (_searchQuery.isNotEmpty)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _searchController.clear();
+                              _searchQuery = '';
+                              _removeOverlay();
+                              _handleSearch(); // maybe inefficient idc tbh
+                            });
+                          },
+                          child: Container(
+                            height: 56,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 24,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
 
                       // Search button
                       GestureDetector(

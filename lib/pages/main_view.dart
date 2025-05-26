@@ -23,12 +23,13 @@ class _MainViewState extends State<MainView> {
   bool _showFavoritesOnly = false;
   String _searchQuery = '';
   bool _isSearching = false;
+  bool _inFavoritesSection = false;
 
   void _performSearch(String query) {
     setState(() {
       _searchQuery = query;
       _isSearching = query.isNotEmpty;
-      _showFavoritesOnly = false;
+      // _showFavoritesOnly = false;
     });
   }
 
@@ -48,15 +49,16 @@ class _MainViewState extends State<MainView> {
       }
     }
 
-    // Introduces a bug where search and favorites are both active
     // This is kept as a feature however to allow searching within favorites
     if (args.containsKey('showFavorites') && args['showFavorites'] == true) {
       setState(() {
         _showFavoritesOnly = true;
-        _categoryFilter = [];
+        _inFavoritesSection = true;
       });
     }
+    args.clear(); // Clear args to prevent re-triggering (causes annoying bug otherwise)
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +72,12 @@ class _MainViewState extends State<MainView> {
         children: [
           // Navigation button bar
           MainNavigationBar(
-            showingFavorites: _showFavoritesOnly,
+            showingFavorites: _inFavoritesSection,
             onShopPressed:
                 () => setState(() {
                   _showFavoritesOnly = false;
                   _categoryFilter = [];
+                  _inFavoritesSection = false;
                 }),
             onOrderHistoryPressed: () {
               Navigator.push(
@@ -88,6 +91,7 @@ class _MainViewState extends State<MainView> {
                 () => setState(() {
                   _showFavoritesOnly = true;
                   _categoryFilter = [];
+                  _inFavoritesSection = true;
                 }),
           ),
 
@@ -105,7 +109,16 @@ class _MainViewState extends State<MainView> {
                       _categoryFilter = updatedCategories;
                       _isSearching = false; // reset search state
                       _searchQuery = ''; // reset search query
-                      _showFavoritesOnly = false; // reset favorites state
+
+                      // Only reset favorites if not in favorites section
+                      // This can be confusing, but allows for better UX
+                      if (_inFavoritesSection && updatedCategories.isNotEmpty) {
+                        _inFavoritesSection = false;
+                        _showFavoritesOnly = false;
+                      } else if (!_inFavoritesSection &&
+                          updatedCategories.isEmpty) {
+                        _showFavoritesOnly = false;
+                      }
                     });
                   },
                 ),
@@ -121,8 +134,10 @@ class _MainViewState extends State<MainView> {
                         // Filters section
                         ProductFilters(
                           title:
-                              _categoryFilter.isNotEmpty
-                                  ? 'Produkter i ${_categoryFilter[0]} (${filteredProducts.length} st)' // TODO: Proper naming
+                              _categoryFilter.isNotEmpty && _showFavoritesOnly
+                                  ? 'Favoritprodukter i ${_categoryFilter[0]} (${filteredProducts.length} st)'
+                                  : _categoryFilter.isNotEmpty
+                                  ? 'Produkter i ${_categoryFilter[0]} (${filteredProducts.length} st)'
                                   : _showFavoritesOnly
                                   ? 'Mina favoritprodukter${_searchQuery.isNotEmpty ? ' - Sökning: "$_searchQuery"' : ''} (${filteredProducts.length} st)'
                                   : _searchQuery.isEmpty
@@ -137,7 +152,8 @@ class _MainViewState extends State<MainView> {
                           onShowFavoritesChanged:
                               (value) => setState(() {
                                 _showFavoritesOnly = value;
-                                _categoryFilter = []; // reset category filter
+                                _inFavoritesSection = false;
+                                // _categoryFilter = []; // reset category filter
                               }),
                         ),
 
@@ -183,10 +199,15 @@ class _MainViewState extends State<MainView> {
 
   // Apply sorting and filtering to the products
   List<Product> _applyFilters(ImatDataHandler handler) {
-    var list =
-        _showFavoritesOnly
-            ? handler.favorites.toList()
-            : handler.products.toList();
+    var list = handler.products.toList();
+
+    if (_showFavoritesOnly) {
+      list = list.where((p) => handler.isFavorite(p)).toList();
+    }
+
+    if (_categoryFilter.isNotEmpty) {
+      list = list.where((p) => _categoryFilter.contains(p.category)).toList();
+    }
 
     if (_isSearching && _searchQuery.isNotEmpty) {
       final lowerQuery = _searchQuery.toLowerCase();
@@ -198,8 +219,6 @@ class _MainViewState extends State<MainView> {
                     p.category.toString().toLowerCase().contains(lowerQuery),
               )
               .toList();
-    } else if (_categoryFilter.isNotEmpty) {
-      list = list.where((p) => _categoryFilter.contains(p.category)).toList();
     }
 
     switch (_sortOrder) {
