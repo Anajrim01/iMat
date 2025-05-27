@@ -16,13 +16,12 @@ class ShoppingCartView extends StatefulWidget {
   State<ShoppingCartView> createState() => _ShoppingCartViewState();
 }
 
-class _ShoppingCartViewState extends State<ShoppingCartView>{
+class _ShoppingCartViewState extends State<ShoppingCartView> {
   int page_number = 1;
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final handler = context.watch<ImatDataHandler>();
-    
-    
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -45,12 +44,11 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
                     borderRadius: BorderRadius.circular(AppTheme.borderRadius),
                     color: Colors.grey[200],
                   ),
-                )
-              )
-            )
-            ,ElevatedButton(
-              onPressed: (
-              ) {
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
@@ -58,9 +56,9 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
                 foregroundColor: Colors.black,
                 elevation: 2,
                 textStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
                 fixedSize: Size(170, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppTheme.borderRadius),
@@ -74,10 +72,10 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
                 child: Text('Hem'),
               ),
             ),
-          ]
+          ],
         ),
-      )
-      ,body: Column(
+      ),
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
@@ -93,121 +91,24 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
                   spreadRadius: 1,
                   blurRadius: 3,
                   offset: const Offset(0, 2),
-                  )
-                ],
+                ),
+              ],
             ),
             child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              //använder padding för spacing av knappar
-              Padding(
-                padding: const EdgeInsets.fromLTRB(70, 20, 287, 20),
-                child: ElevatedButton.icon(
-                  label: const Text('tillbaka'),
-                  onPressed: (){
-                    if(page_number == 1){
-                      Navigator.pop(context);
-                    }
-                    else{
-                      _changePage(page_number-1);
-                    }
-                  }, 
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFF3E5F5),
-                    foregroundColor: Colors.black,
-                    elevation: 2,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 24,
-                      ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                    side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
-                    ),
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                ),
-              )
-              ),
-              ElevatedButton.icon(
-              label: const Text('Varukorg'),
-                onPressed: (){
-                  _changePage(1);
-                }, 
-                style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFF3E5F5),
-                foregroundColor: Colors.black,
-                elevation: 0.5,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 43,
-                  vertical: 43,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
-                ),
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            ElevatedButton.icon(
-              label: const Text('Leverans'),
-                onPressed: (){
-                  _changePage(2);
-                }, 
-                style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFF3E5F5),
-                foregroundColor: Colors.black,
-                elevation: 0.5,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 43,
-                  vertical: 43,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
-                ),
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            ElevatedButton.icon(
-              label: const Text('Betalning'),
-                onPressed: (){
-                  _changePage(3);
-                }, 
-                style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFF3E5F5),
-                foregroundColor: Colors.black,
-                elevation: 0.5,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 43,
-                  vertical: 43,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
-                ),
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-              if(page_number != 3)
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                //använder padding för spacing av knappar
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(290,20,38,20),
+                  padding: const EdgeInsets.fromLTRB(70, 20, 287, 20),
                   child: ElevatedButton.icon(
-                    label: const Text('Fortsätt'),
-                    onPressed: (){
-                      _changePage(page_number+1);
-                    }, 
+                    label: const Text('tillbaka'),
+                    onPressed: () {
+                      if (page_number == 1) {
+                        Navigator.pop(context);
+                      } else {
+                        _changePage(page_number - 1);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF3E5F5),
                       foregroundColor: Colors.black,
@@ -215,35 +116,147 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.borderRadius,
                         ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                      side: BorderSide(color: Colors.deepPurple.shade100, width: 1),
+                        side: BorderSide(
+                          color: Colors.deepPurple.shade100,
+                          width: 1,
+                        ),
                       ),
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
+                    ),
                   ),
-                )
-              )
-            ],
-          )
-        ),
-        if (page_number==1)
-         Expanded(
-          child: BuyoutCartBar(handler: handler)
-        )
-        else if (page_number == 2)
-         Expanded(
-          child: BuyoutDelivery()
-         )
-        else if (page_number==3)
-         Expanded(child: BuyoutPayment(handler: handler))
-      ]
+                ),
+                ElevatedButton.icon(
+                  label: const Text('Varukorg'),
+                  onPressed: () {
+                    _changePage(1);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF3E5F5),
+                    foregroundColor: Colors.black,
+                    elevation: 0.5,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 43,
+                      vertical: 43,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                      side: BorderSide(
+                        color: Colors.deepPurple.shade100,
+                        width: 1,
+                      ),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  label: const Text('Leverans'),
+                  onPressed: () {
+                    _changePage(2);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF3E5F5),
+                    foregroundColor: Colors.black,
+                    elevation: 0.5,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 43,
+                      vertical: 43,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                      side: BorderSide(
+                        color: Colors.deepPurple.shade100,
+                        width: 1,
+                      ),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  label: const Text('Betalning'),
+                  onPressed: () {
+                    _changePage(3);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF3E5F5),
+                    foregroundColor: Colors.black,
+                    elevation: 0.5,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 43,
+                      vertical: 43,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                      side: BorderSide(
+                        color: Colors.deepPurple.shade100,
+                        width: 1,
+                      ),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                if (page_number != 3)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(290, 20, 38, 20),
+                    child: ElevatedButton.icon(
+                      label: const Text('Fortsätt'),
+                      onPressed: () {
+                        _changePage(page_number + 1);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF3E5F5),
+                        foregroundColor: Colors.black,
+                        elevation: 2,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 24,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadius,
+                          ),
+                          side: BorderSide(
+                            color: Colors.deepPurple.shade100,
+                            width: 1,
+                          ),
+                        ),
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (page_number == 1)
+            Expanded(child: BuyoutCartBar(handler: handler))
+          else if (page_number == 2)
+            Expanded(child: BuyoutDelivery())
+          else if (page_number == 3)
+            Expanded(child: BuyoutPayment(handler: handler)),
+        ],
       ),
     );
   }
+
   void _changePage(int newPage) {
     setState(() {
       page_number = newPage;
