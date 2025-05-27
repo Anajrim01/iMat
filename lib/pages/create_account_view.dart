@@ -1,60 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:imat_app/model/imat/customer.dart';
+import 'package:imat_app/model/imat/user.dart';
+import 'package:imat_app/model/imat_data_handler.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:provider/provider.dart';
 
 
-class CreateAccountView extends StatefulWidget {
+
+
+
+
+class CreateAccountView extends StatelessWidget {
   final VoidCallback onSwitchToLogin;
 
-  const CreateAccountView({super.key, required this.onSwitchToLogin});
+  CreateAccountView({super.key, required this.onSwitchToLogin});
 
-  @override
-  State<CreateAccountView> createState() => _CreateAccountViewState();
-}
 
-class _CreateAccountViewState extends State<CreateAccountView> {
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _mobilePhoneNumberController = TextEditingController();
   final _emailController = TextEditingController();
-  final _addressController = TextEditingController();
+  final _adressController = TextEditingController();
+  final _postCodeController = TextEditingController();
+  final _postAdressController = TextEditingController();
+
+
   final _passwordController = TextEditingController();
 
-  String? feedbackMessage;
-  Color feedbackColor = Colors.transparent;
 
-  Future<void> _createAccount() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final address = _addressController.text.trim();
 
-    if (email.isEmpty || password.isEmpty || address.isEmpty) {
-      setState(() {
-        feedbackMessage = "Alla fält måste fyllas i";
-        feedbackColor = Colors.red[200]!;
-      });
-      return;
-    }
 
-    final prefs = await SharedPreferences.getInstance();
-
-    if (prefs.containsKey('user_email') && prefs.getString('user_email') == email) {
-      setState(() {
-        feedbackMessage = "Konto finns redan för denna e-post";
-        feedbackColor = Colors.red[200]!;
-      });
-      return;
-    }
-
-    await prefs.setString('user_email', email);
-    await prefs.setString('user_password', password);
-    await prefs.setString('user_address', address);
-
-    setState(() {
-      feedbackMessage = "Konto skapat! Du kan nu logga in.";
-      feedbackColor = Colors.green[200]!;
-    });
-
-    
-    Future.delayed(const Duration(seconds: 1), widget.onSwitchToLogin);
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -72,37 +50,6 @@ class _CreateAccountViewState extends State<CreateAccountView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               
-                if (feedbackMessage != null)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: feedbackColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          feedbackColor == Colors.green[200]
-                              ? Icons.check_circle
-                              : Icons.error_outline,
-                          color: Colors.black87,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            feedbackMessage!,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
                 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,12 +65,11 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                   ],
                 ),
                 const SizedBox(height: 20),
-
                
                 Row(
                   children: [
                     OutlinedButton(
-                      onPressed: widget.onSwitchToLogin,
+                      onPressed: onSwitchToLogin,
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppTheme.colorScheme.primary),
                         padding: const EdgeInsets.symmetric(
@@ -142,7 +88,7 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                     ),
                     const SizedBox(width: 16),
                     ElevatedButton(
-                      onPressed: _createAccount,
+                      onPressed: () {}, // Lägg till logik här
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.colorScheme.primary,
                         padding: const EdgeInsets.symmetric(
@@ -163,37 +109,160 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                 ),
                 const SizedBox(height: 32),
 
-                
-                _buildField(
+
+
+                  Row(
+                  children: [
+          Expanded(
+          child: _buildField(
+                  label: "Förnamn",
+                  controller: _firstNameController,
+                  hintText: "namn",
+                  ),
+                  ),
+                const SizedBox(width: 16),
+          Expanded(
+          child: _buildField(
+                  label: "Efternamn",
+                  controller: _lastNameController,
+                  hintText: "efternamn",
+                  ),
+                  ),
+                 ],
+                ),
+                const SizedBox(height: 16),
+
+                      
+                      
+                Row(
+                children: [
+          Expanded(
+          child: _buildField(
                   label: "E-postadress/Användarnamn",
                   controller: _emailController,
-                  hintText: "name@gmail.com",
+                  hintText: "namn@gmail.com",
                 ),
-                const SizedBox(height: 8),
-                _buildBulletText("Detta kommer vara ditt användar-id när du loggar in"),
-
-                const SizedBox(height: 20),
-
-               
-                _buildField(
-                  label: "Adress",
-                  controller: _addressController,
-                  hintText: "Storgatan 1, 123 45 Stad",
-                ),
-                const SizedBox(height: 8),
-                _buildBulletText("Vi använder din adress för hemleverans av mat."),
-
-                const SizedBox(height: 20),
-
                 
-                _buildField(
+                  ),
+                const SizedBox(width: 16),
+          Expanded(
+          child: _buildField(
                   label: "Lösenord",
                   controller: _passwordController,
                   hintText: "lösenord",
                   obscure: true,
+                  ),
+                  ),
+                 ],
+                ),
+
+                const SizedBox(height: 8),
+                _buildBulletText("Detta kommer vara ditt användar-id när du loggar in"),
+                
+
+          
+              
+          /*    IntlPhoneField(
+              decoration: InputDecoration(
+               border: OutlineInputBorder(
+              borderSide: BorderSide(), //Cool inlogg grej
+              ),
+              ),
+              
+              controller: _mobilePhoneNumberController,
+              initialCountryCode: 'SE',
+              onChanged: (phone) {
+               print(phone.completeNumber);
+               },
+              ),*/
+                
+                
+
+
+                const SizedBox(height: 20),
+                _buildField(
+                  label: "Mobilnummer",
+                  controller: _mobilePhoneNumberController,
+                  hintText: "123-456-7890",
+                ),
+                
+                _buildField(
+                  label: "Nummer",
+                  controller: _phoneNumberController,
+                  hintText: "123-456-7890",
+                ),
+
+
+                _buildField(
+                  label: "Adress",
+                  controller: _adressController,
+                  hintText: "12-345",
+                ),
+                _buildField(
+                  label: "Postkod",
+                  controller: _postCodeController,
+                  hintText: "12-345",
+                ),
+                _buildField(
+                  label: "Postadress",
+                  controller: _postAdressController,
+                  hintText: "123-456-7890",
                 ),
 
                 const SizedBox(height: 32),
+
+
+
+                Center(
+                  
+                  child: ElevatedButton(
+                    onPressed: () {
+                      var iMatHandler = Provider.of<ImatDataHandler>(context, listen: false);
+                        // Create the Customer object from the input fields
+                      Customer newCustomer = Customer(
+                        
+                          _firstNameController.text.trim(),
+                          _lastNameController.text.trim(),
+                          _phoneNumberController.text.trim(),
+                          _mobilePhoneNumberController.text.trim(),
+                          _emailController.text.trim(),
+                          _adressController.text.trim(),
+                          _postCodeController.text.trim(),
+                          _postAdressController.text.trim(),
+                          );
+
+                      User newUser = User(
+                          _emailController.text.trim(),
+                          _passwordController.text.trim(),
+                      );
+                    
+  
+  // Set the customer and user using the handler
+  iMatHandler.setCustomer(newCustomer);
+  iMatHandler.setUser(newUser);
+
+  // Optionally show confirmation or navigate to another screen
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Kundinformation sparad!')),
+  );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.colorScheme.primary,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.paddingHuge,
+                        vertical: AppTheme.paddingMedium,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+                      ),
+                      textStyle: AppTheme.textTheme.bodyLarge,
+                    ),
+                    child: const Text(
+                      "Skapa konto",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
@@ -204,6 +273,7 @@ class _CreateAccountViewState extends State<CreateAccountView> {
 
   Widget _buildField({
     required String label,
+    String? trailingLabel,
     required TextEditingController controller,
     String? hintText,
     bool obscure = false,
@@ -211,7 +281,16 @@ class _CreateAccountViewState extends State<CreateAccountView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 16)),
+        Row(
+          children: [
+            Text(label, style: const TextStyle(fontSize: 16)),
+            if (trailingLabel != null)
+              Text(
+                trailingLabel,
+                style: const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
+          ],
+        ),
         const SizedBox(height: 8),
         TextField(
           controller: controller,
@@ -245,7 +324,4 @@ class _CreateAccountViewState extends State<CreateAccountView> {
     );
   }
 }
-
-
-
 
