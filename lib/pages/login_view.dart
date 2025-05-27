@@ -1,73 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'main_view.dart';
+import 'package:imat_app/model/imat_data_handler.dart' show ImatDataHandler;
+import 'package:imat_app/pages/main_view.dart';
+import 'package:imat_app/widgets/main/user_manager.dart';
+import 'package:provider/provider.dart';
 
 
 
-class LoginView extends StatefulWidget {
+class LoginView extends StatelessWidget {
   final VoidCallback onSwitchToRegister;
 
   const LoginView({super.key, required this.onSwitchToRegister});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
-}
+  Widget build(BuildContext context) {
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
 
-class _LoginViewState extends State<LoginView> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  String? _errorMessage;
+  void _login() {
+  final userManager = Provider.of<UserManager>(context, listen: false);
+  final email = _emailController.text.trim();
+  final password = _passwordController.text;
+  final imatHandler = Provider.of<ImatDataHandler>(context, listen: false);
+  final user = imatHandler.getUser();
 
-  Future<void> _login() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      setState(() {
-        _errorMessage = "Fyll i både e-post och lösenord";
-      });
-      return;
-    }
-
-    final prefs = await SharedPreferences.getInstance();
-    final savedEmail = prefs.getString('user_email');
-    final savedPassword = prefs.getString('user_password');
-
-    if (savedEmail == null || savedPassword == null) {
-      setState(() {
-        _errorMessage = "Inget konto är registrerat";
-      });
-      return;
-    }
-
-    if (email != savedEmail) {
-      setState(() {
-        _errorMessage = "Ingen användare hittades med denna e-post";
-      });
-      return;
-    }
-
-    if (password != savedPassword) {
-      setState(() {
-        _errorMessage = "Fel lösenord – försök igen";
-      });
-      return;
-    }
-
-    
-    setState(() {
-      _errorMessage = null;
-    });
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MainView()),
+  if (user != null && user.userName == email && user.password == password) {
+    userManager.logIn();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainView()),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Fel e-post eller lösenord")),
     );
   }
+}
 
-  @override
-  Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -82,7 +50,7 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                
+                // Rubrik + Stäng
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -98,11 +66,11 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 const SizedBox(height: 20),
 
-                
+                // Knapp-rad
                 Row(
                   children: [
                     ElevatedButton(
-                      onPressed: _login,
+                      onPressed: () {}, // Aktiv knapp
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.colorScheme.primary,
                         padding: const EdgeInsets.symmetric(
@@ -114,11 +82,14 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         textStyle: AppTheme.textTheme.headlineSmall,
                       ),
-                      child: const Text("Logga in", style: TextStyle(color: Colors.white)),
+                      child: const Text(
+                        "Logga in",
+                        style: TextStyle(color: Colors.white), // vit text
+                      ),
                     ),
                     const SizedBox(width: AppTheme.paddingLarge),
                     OutlinedButton(
-                      onPressed: widget.onSwitchToRegister,
+                      onPressed: onSwitchToRegister,
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppTheme.colorScheme.primary),
                         padding: const EdgeInsets.symmetric(
@@ -130,12 +101,16 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         textStyle: AppTheme.textTheme.headlineSmall,
                       ),
-                      child: Text("Skapa konto", style: TextStyle(color: AppTheme.colorScheme.primary)),
+                      child: Text(
+                        "Skapa konto",
+                        style: TextStyle(color: AppTheme.colorScheme.primary),
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 32),
 
+                // E-post
                 _buildField(
                   label: "E-postadress/Användarnamn",
                   controller: _emailController,
@@ -143,6 +118,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 const SizedBox(height: 20),
 
+                // Lösenord
                 _buildField(
                   label: "Lösenord",
                   controller: _passwordController,
@@ -150,23 +126,7 @@ class _LoginViewState extends State<LoginView> {
                   obscure: true,
                 ),
 
-                const SizedBox(height: 24),
-
-               
-                if (_errorMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Text(
-                      _errorMessage!,
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-
+                const SizedBox(height: 32),
                 Center(
                   child: ElevatedButton(
                     onPressed: _login,
@@ -181,7 +141,10 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       textStyle: AppTheme.textTheme.bodyLarge,
                     ),
-                    child: const Text("Logga in", style: TextStyle(color: Colors.white, fontSize: 16)),
+                    child: const Text(
+                      "Logga in",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
                 )
               ],
@@ -225,10 +188,6 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
-
-
-
-
 
 
 
