@@ -14,18 +14,40 @@ class _TimePopupState extends State<TimePopup> {
   int hoveredDayIndex = -1;
   int hoveredTimeIndex = -1;
 
-  final List<Map<String, String>> days = [
-    {"day": "Torsdag", "date": "8 maj"},
-    {"day": "Fredag", "date": "9 maj"},
-    {"day": "Lördag", "date": "10 maj"},
-    {"day": "Söndag", "date": "11 maj"},
-  ];
-
   final List<String> times = [
     "08:00 - 10:00",
-    "10:00 - 12:00",
     "12:00 - 14:00",
+    "16:00 - 18:00",
   ];
+
+  List<Map<String, String>> days = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    final weekdayNames = [
+      "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag", "Söndag"
+    ];
+
+    days = List.generate(4, (i) {
+      final date = now.add(Duration(days: i+1));
+      final weekday = weekdayNames[date.weekday - 1];
+      final formattedDate = "${date.day} ${_getMonthName(date.month)}";
+      return {
+        "day": weekday,
+        "date": formattedDate,
+      };
+    });
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      "januari", "februari", "mars", "april", "maj", "juni",
+      "juli", "augusti", "september", "oktober", "november", "december"
+    ];
+    return months[month - 1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +66,6 @@ class _TimePopupState extends State<TimePopup> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            
             Padding(
               padding: const EdgeInsets.all(AppTheme.paddingMedium),
               child: Row(
@@ -61,7 +82,6 @@ class _TimePopupState extends State<TimePopup> {
                 ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.only(
                 left: AppTheme.paddingLarge,
@@ -73,8 +93,6 @@ class _TimePopupState extends State<TimePopup> {
                 style: textTheme.displayLarge,
               ),
             ),
-
-            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.paddingMedium),
               child: Row(
@@ -96,10 +114,7 @@ class _TimePopupState extends State<TimePopup> {
                 }),
               ),
             ),
-
             const SizedBox(height: AppTheme.paddingMedium),
-
-            
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.paddingMediumSmall),
@@ -152,10 +167,7 @@ class _TimePopupState extends State<TimePopup> {
                 },
               ),
             ),
-
             const SizedBox(height: AppTheme.paddingMedium),
-
-            
             Padding(
               padding: const EdgeInsets.only(
                 bottom: AppTheme.paddingLarge,
@@ -196,7 +208,6 @@ class _TimePopupState extends State<TimePopup> {
       ),
     );
   }
-
 
   Widget _dayCard(
     int index,
@@ -254,6 +265,7 @@ class _TimePopupState extends State<TimePopup> {
     );
   }
 }
+
 
 
 
