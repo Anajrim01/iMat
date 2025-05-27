@@ -7,8 +7,11 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ImatDataHandler(),
+        MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ImatDataHandler()),
+        ChangeNotifierProvider(create: (_) => UserManager()), 
+      ],
       child: const MyApp(),
     ),
   );
