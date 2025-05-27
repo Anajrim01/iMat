@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
+import 'package:imat_app/model/imat/util/functions.dart';
 
 class CategorySidebar extends StatelessWidget {
   final List<dynamic> categories;
@@ -58,7 +59,7 @@ class CategorySidebar extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: _buildCategoryCard(
-                      categoryName: categoryName,
+                      categoryName: normalizeString(categoryName),
                       isSelected: isSelected,
                       onTap: () {
                         if (isSelected) {
@@ -142,7 +143,7 @@ class CategorySidebar extends StatelessWidget {
   }
 
   String _getCategoryImagePath(String categoryName) {
-    final normalizedCategoryName = categoryName.toLowerCase();
+    final normalizedCategoryName = categoryName.toLowerCase().replaceAll(' ', '_');
     return 'assets/images/categories/$normalizedCategoryName.jpg';
   }
 

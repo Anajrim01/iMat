@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
+import 'filters_chips.dart';
 
 class ProductFilters extends StatelessWidget {
   final String title;
@@ -7,6 +8,7 @@ class ProductFilters extends StatelessWidget {
   final Function(String) onSortChanged;
   final bool showFavoritesOnly;
   final Function(bool) onShowFavoritesChanged;
+  final Function(String) onFilterTapped;
 
   const ProductFilters({
     required this.title,
@@ -14,6 +16,7 @@ class ProductFilters extends StatelessWidget {
     required this.onSortChanged,
     required this.showFavoritesOnly,
     required this.onShowFavoritesChanged,
+    required this.onFilterTapped,
     super.key,
   });
 
@@ -42,7 +45,7 @@ class ProductFilters extends StatelessWidget {
                 children: [
                   const Text(
                     'Sortera efter:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(width: 12),
                   _buildDropdown(sortOrder, [
@@ -60,18 +63,17 @@ class ProductFilters extends StatelessWidget {
         Row(
           children: [
             const Text(
-              'Typ av produkt:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              'Sortering av produkter:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 12),
-            // Expanded(
-            //   child: _buildDropdown(
-            //     selectedCategory ?? 'Alla',
-            //     ['Alla', ...availableCategories],
-            //     (value) => onCategoryChanged(value == 'Alla' ? null : value),
-            //     isExpanded: true,
-            //   ),
-            // ),
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: FiltersChips(
+                filtersList: ['Senaste Köp', 'Ekologiskt'],
+                onFilterTapped: onFilterTapped,
+              ),
+            ),
             const Spacer(),
 
             // Favorites toggle
@@ -79,7 +81,7 @@ class ProductFilters extends StatelessWidget {
               children: [
                 const Text(
                   'Endast favoriter:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 8),
                 Switch(

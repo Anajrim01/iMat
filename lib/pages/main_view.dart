@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
+import 'package:imat_app/model/imat/util/functions.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/pages/order_history_view.dart';
@@ -20,6 +21,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   String _sortOrder = 'Pris lågt till högt';
   List<dynamic> _categoryFilter = [];
+  final List<dynamic> _productFilter = [];
   bool _showFavoritesOnly = false;
   String _searchQuery = '';
   bool _isSearching = false;
@@ -59,12 +61,12 @@ class _MainViewState extends State<MainView> {
     args.clear(); // Clear args to prevent re-triggering (causes annoying bug otherwise)
   }
 
-
   @override
   Widget build(BuildContext context) {
     final handler = context.watch<ImatDataHandler>();
     final filteredProducts = _applyFilters(handler);
 
+    // handler.placeOrder();
     return Scaffold(
       appBar: CustomAppBar(onSearchSubmitted: _performSearch),
       body: Column(
@@ -135,9 +137,9 @@ class _MainViewState extends State<MainView> {
                         ProductFilters(
                           title:
                               _categoryFilter.isNotEmpty && _showFavoritesOnly
-                                  ? 'Favoritprodukter i ${_categoryFilter[0]} (${filteredProducts.length} st)'
+                                  ? 'Favoritprodukter i ${normalizeString(_categoryFilter[0].toString())} (${filteredProducts.length} st)'
                                   : _categoryFilter.isNotEmpty
-                                  ? 'Produkter i ${_categoryFilter[0]} (${filteredProducts.length} st)'
+                                  ? 'Produkter i ${normalizeString(_categoryFilter[0].toString())} (${filteredProducts.length} st)'
                                   : _showFavoritesOnly
                                   ? 'Mina favoritprodukter${_searchQuery.isNotEmpty ? ' - Sökning: "$_searchQuery"' : ''} (${filteredProducts.length} st)'
                                   : _searchQuery.isEmpty
@@ -155,17 +157,15 @@ class _MainViewState extends State<MainView> {
                                 _inFavoritesSection = false;
                                 // _categoryFilter = []; // reset category filter
                               }),
+                          onFilterTapped:
+                              (value) => setState(() {
+                                if (_productFilter.contains(value)) {
+                                  _productFilter.remove(value);
+                                } else {
+                                  _productFilter.add(value);
+                                }
+                              }),
                         ),
-
-                        const SizedBox(height: 16),
-                        // TODO: FiltersChips for whatever new thing?
-                        // FiltersChips(
-                        //   categoryFilters: _categoryFilter,
-                        //   onRemoveFilter:
-                        //       (categoryValue) => setState(() {
-                        //         _categoryFilter.remove(categoryValue);
-                        //       }),
-                        // ),
 
                         // Product grid
                         Expanded(
@@ -207,6 +207,21 @@ class _MainViewState extends State<MainView> {
 
     if (_categoryFilter.isNotEmpty) {
       list = list.where((p) => _categoryFilter.contains(p.category)).toList();
+    }
+
+    if (_productFilter.isNotEmpty) {
+      if (_productFilter.contains('Senaste Köp')) {
+        // Filter to only show products that were in previous orders
+        final purchasedProductIds = handler.orders
+            .expand((order) => order.items)
+            .map((item) => item.product.name)
+            .toSet();
+        list = list.where((p) => purchasedProductIds.contains(p.name)).toList();
+      }
+
+      if (_productFilter.contains('Ekologiskt')) {
+        list = list.where((p) => p.isEcological).toList();
+      }
     }
 
     if (_isSearching && _searchQuery.isNotEmpty) {

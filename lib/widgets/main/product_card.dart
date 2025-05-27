@@ -160,8 +160,6 @@ class _ProductCardState extends State<ProductCard> {
               onPressed: () {
                 widget.handler
                     .shoppingCartAdd(ShoppingItem(widget.product, amount: 1));
-                // Hide the dialog after adding to cart?
-                // TODO: Discuss with team if we want to close the dialog
                 Navigator.pop(c);
               },
               style: ElevatedButton.styleFrom(

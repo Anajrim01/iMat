@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 
 class FiltersChips extends StatelessWidget {
-  final List<dynamic> categoryFilters;
-  final Function(dynamic) onRemoveFilter;
+  final List<String> filtersList;
+  final Function(String) onFilterTapped;
+  final Color? chipColor;
 
   const FiltersChips({
-    required this.categoryFilters,
-    required this.onRemoveFilter,
+    required this.filtersList,
+    required this.onFilterTapped,
+    this.chipColor,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (categoryFilters.isEmpty) {
+    if (filtersList.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -23,27 +25,63 @@ class FiltersChips extends StatelessWidget {
         spacing: 8,
         runSpacing: 4,
         children:
-            categoryFilters.map((categoryValue) {
-              return Chip(
-                label: Text(
-                  categoryValue.toString().split('.').last,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                onDeleted: () => onRemoveFilter(categoryValue),
-                deleteIconColor: Colors.black54,
-                backgroundColor: Colors.blueGrey[100],
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                ),
+            filtersList.map((categoryValue) {
+              return CustomFilterChip(
+                label: categoryValue,
+                onTap: () => onFilterTapped(categoryValue),
+                backgroundColor: chipColor,
               );
             }).toList(),
+      ),
+    );
+  }
+}
+
+class CustomFilterChip extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+  final Color? backgroundColor;
+
+  const CustomFilterChip({
+    required this.label,
+    required this.onTap,
+    this.backgroundColor,
+    super.key,
+  });
+
+  @override
+  State<CustomFilterChip> createState() => _CustomFilterChipState();
+}
+
+class _CustomFilterChipState extends State<CustomFilterChip> {
+  bool isSelected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color enabledColor = AppTheme.colorScheme.primary;
+    final Color disabledColor = AppTheme.colorScheme.secondary;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isSelected = !isSelected;
+        });
+        widget.onTap();
+      },
+      child: Chip(
+        label: Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: isSelected ? Colors.white : Colors.grey[600],
+          ),
+        ),
+        backgroundColor: isSelected ? enabledColor : disabledColor,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        ),
       ),
     );
   }
