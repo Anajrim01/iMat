@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/widgets/main/delivery_popup.dart';
+import 'package:imat_app/model/imat/user_manager.dart';
+import 'package:imat_app/widgets/main/login_delivey_popup.dart';
 
 
 class BuyoutDelivery extends StatefulWidget {
@@ -14,20 +16,21 @@ class BuyoutDelivery extends StatefulWidget {
 }
 
 class BuyoutDeliveryState extends State<BuyoutDelivery> {
-  bool adress_vald = false; // Flytta till klassnivå
-  String? selectedTime;     // Sparar vald tid + datum
+  bool adress_vald = false; 
+  String? selectedTime;     
 
   Future<void> showDeliveryPopup() async {
     final result = await showDialog(
       context: context,
       builder: (context) => const DeliveryPopup(),
     );
+  }
 
-    if (result != null) {
-      setState(() {
-        adress_vald = result; // Antar att popupen returnerar ett bool-värde
-      });
-    }
+  Future<void> showLoginDeliveryPopup() async {
+    final result = await showDialog(
+      context: context,
+      builder: (context) => const LoginDeliveyPopup(),
+    );
   }
 
   Future<void> showTimePopup() async {
@@ -46,6 +49,11 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
   @override
   Widget build(BuildContext context) {
     final handler = context.watch<ImatDataHandler>();
+    final iMatHandler = Provider.of<ImatDataHandler>(context, listen: false);
+    final customer = iMatHandler.getCustomer();
+    var adress = customer.address;
+    bool LoggedIn = false;
+
     return Center(
       child: Container(
         width: 950,
@@ -113,33 +121,51 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
                   ),
                   child: Row(
                     children: [
-                      if (!adress_vald)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                      Consumer<UserManager>(
+                        builder: (context, userManager, child) {
+                          if(userManager.isLoggedIn){
+                            LoggedIn = true;
+                          }
+                        if(adress == "" || !userManager.isLoggedIn){
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 8),
                           child: Text(
                             "Ingen adress vald",
-                            style: AppTheme.textTheme.headlineSmall?.copyWith(
+                            style: TextStyle(
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
-                          ),
-                        )
-                      else
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Text(
-                            "Adress är vald",
-                            style: AppTheme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.normal,
+                            )
+                          );
+                        }
+                        else{
+                          return Padding(
+                            padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+                            child:Text(
+                             "Vald adress: $adress",
+                             style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
-                          ),
+                            ),
+                          );
+                        }
+                         
+                          }
                         ),
+
                       Padding(
                         padding: const EdgeInsets.only(left: 40),
                         child: ElevatedButton(
                           onPressed: () {
-                            showDeliveryPopup();
+                            if(LoggedIn){
+                              showLoginDeliveryPopup();
+                            }
+                            else{
+                              showDeliveryPopup();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[200],

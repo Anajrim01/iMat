@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:imat_app/model/imat/user.dart';
 
 class DeliveryPopup extends StatefulWidget {
-  const DeliveryPopup({super.key});
+  const DeliveryPopup({super.key,});
 
   @override
   State<DeliveryPopup> createState() => DeliveryPopupState();
@@ -134,7 +134,7 @@ class DeliveryPopupState extends State<DeliveryPopup> {
                 || _firstNameController.text.trim() == '' || _mobilePhoneNumberController.text.trim() == ''
                 || _postAdressController.text.trim() =='' || _postCodeController.text.trim()==''){
                   ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Måste välja adress")),
+                  const SnackBar(content: Text("Måste fylla i alla alternativ")),
                  );
                 }
                 else{
