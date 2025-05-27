@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/credit_card.dart';
 import 'package:imat_app/model/imat/customer.dart';
 import 'package:imat_app/model/imat/user.dart';
@@ -127,13 +128,18 @@ class _MyAccountState extends State<MyAccount> {
     final user = iMatHandler.getUser();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Account')),
-      body: Padding(
+      appBar: CustomMyAccountAppBar(),
+      body: Center(
+      child: 
+      SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Column(
+          child: Row(
+             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Column(
+              children: [
               const Text(
                 'Account Information',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -145,6 +151,7 @@ class _MyAccountState extends State<MyAccount> {
                   controller: _firstNameController,
                   decoration: const InputDecoration(labelText: 'First Name'),
                 ),
+
                 TextField(
                   controller: _lastNameController,
                   decoration: const InputDecoration(labelText: 'Last Name'),
@@ -153,13 +160,16 @@ class _MyAccountState extends State<MyAccount> {
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
                 ),
+                
               ] else ...[
                 Text('Name: ${customer.firstName} ${customer.lastName}'),
                 Text('Email: ${customer.email}'),
                 Text('Lösenord: ${user.password}'),
               ],
+            ]),
 
-              const SizedBox(height: 24),
+              Column(
+                children: [
               const Text(
                 'Credit Card',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -232,10 +242,56 @@ class _MyAccountState extends State<MyAccount> {
                   },
                   child: Text('Click Me'),
                 ),
+            
               ],
+                ]),
             ],
+            
           ),
         ),
+      ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+// Custom AppBar
+class CustomMyAccountAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomMyAccountAppBar({super.key});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(80);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      toolbarHeight: 80,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          Text('I', style: TextStyle(color: AppTheme.colorScheme.primary, fontSize: 50)),
+          const Text('Mat', style: TextStyle(fontSize: 50)),
+          const Spacer(),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFF3E5F5),
+              foregroundColor: Colors.black,
+              elevation: 2,
+              textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              fixedSize: const Size(170, 50),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.borderRadius)),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+              child: Text('Hem'),
+            ),
+          ),
+        ],
       ),
     );
   }
