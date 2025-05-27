@@ -89,7 +89,7 @@ flutter run
 
 ### Projekt struktur
 
-Projektet har följande mappstruktur:
+Projektet har följande mappstruktur (outdated):
 
 ```
 └── 📁Project---Design-och-kontruktion-av-grafiska-gr-nssnitt # Root folder for your Flutter project.
@@ -127,7 +127,8 @@ Projektet har följande mappstruktur:
 ### Skärmdumpar
 
 #### Startsida
-![image](https://github.com/user-attachments/assets/3266486d-6036-48c9-b9f0-4753bc073aaf)
+![image](https://github.com/user-attachments/assets/0e518de8-bff6-4e64-a458-4669031f483a)
+
 
 
 #### Tidigare Beställningar
@@ -136,6 +137,18 @@ Projektet har följande mappstruktur:
 
 #### Mina Favoriter
 ![image](https://github.com/user-attachments/assets/965f6d69-8c50-41cf-aab2-63dc993b8a0c)
+
+
+#### Kassa
+![image](https://github.com/user-attachments/assets/90cc4d38-88b3-4007-9af8-b88f5058e6ec)
+
+
+#### Logga in/Skapa Konto
+
+![image](https://github.com/user-attachments/assets/e3872d58-589f-4e20-9bc0-0727b3c32072)
+![image](https://github.com/user-attachments/assets/5aa75fc7-3941-4f3c-9d51-777535d87cc2)
+
+
 
 
 
