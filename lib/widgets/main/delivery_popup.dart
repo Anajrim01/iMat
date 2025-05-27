@@ -13,11 +13,14 @@ class DeliveryPopup extends StatefulWidget {
 }
 
 class DeliveryPopupState extends State<DeliveryPopup> {
-  var _firstNameController = TextEditingController();
-  var _lastNameController = TextEditingController();
-  var _adressController = TextEditingController();
-  var _phoneNumberController = TextEditingController();
-  var _emailController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _mobilePhoneNumberController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _adressController = TextEditingController();
+  final _postCodeController = TextEditingController();
+  final _postAdressController = TextEditingController();
   @override
   Widget build(BuildContext context) {
 
@@ -26,7 +29,8 @@ class DeliveryPopupState extends State<DeliveryPopup> {
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.5,
         height: MediaQuery.of(context).size.height,
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           children: [
             Row(
               children: [
@@ -63,6 +67,18 @@ class DeliveryPopupState extends State<DeliveryPopup> {
             ],
             ),
             const SizedBox(height: 10,),
+            Row(
+              children: [
+                 Expanded(
+                  child: _buildField(
+                  label: "Mobilnummer",
+                  controller: _mobilePhoneNumberController,
+                  hintText: "efternamn",
+                ),
+              ),
+              ],
+            ),
+            const SizedBox(height: 10,),
             Row(children: [
               Expanded(child: _buildField(
                   label: "Nummer",
@@ -84,12 +100,47 @@ class DeliveryPopupState extends State<DeliveryPopup> {
                     ),
             ],
             ),
+            const SizedBox(height: 10,),
+            Row(
+              children: [
+                 Expanded(
+                  child: _buildField(
+                  label: "Postkod",
+                  controller: _postCodeController,
+                  hintText: "postkod",
+                ),
+              ),
+              ],
+            ),
+            const SizedBox(height: 10,),
+            Row(
+              children: [
+                 Expanded(
+                  child: _buildField(
+                  label: "Postadress",
+                  controller: _postAdressController,
+                  hintText: "postadress",
+                ),
+              ),
+              ],
+            ),
+            
             const SizedBox(height: 7,),
            ElevatedButton(
               onPressed: (
               ) {
-                save_info();
-                Navigator.pop(context);
+                if(_adressController.text.trim()=='' || _emailController.text.trim()=='' 
+                || _phoneNumberController.text.trim()=='' || _lastNameController.text.trim()==''
+                || _firstNameController.text.trim() == '' || _mobilePhoneNumberController.text.trim() == ''
+                || _postAdressController.text.trim() =='' || _postCodeController.text.trim()==''){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Måste välja adress")),
+                 );
+                }
+                else{
+                  save_info();
+                  Navigator.pop(context);
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF3E5F5),
@@ -114,6 +165,7 @@ class DeliveryPopupState extends State<DeliveryPopup> {
             ),
           ],
         ),
+        )
       ),
     );
   }
@@ -121,56 +173,22 @@ class DeliveryPopupState extends State<DeliveryPopup> {
     final iMatHandler = Provider.of<ImatDataHandler>(context, listen: false);
     final customer = iMatHandler.getCustomer();
     final user = iMatHandler.getUser();
-    var pass = customer.firstName;
-    print("user.password: $pass");
-
-    var firstName = '';
-    var lastName = '';
-    var phoneNumber = '';
-    var email = '';
-    var adress = '';
-
-    if(_firstNameController.text.trim()==''){
-      firstName = customer.firstName;
-    }
-    else{
-      firstName = _firstNameController.text.trim();
-    }
-    if(_lastNameController.text.trim()==''){
-      lastName = customer.lastName;
-    }
-    else{
-      lastName = _lastNameController.text.trim();    
-    }
-    if(_phoneNumberController.text.trim()==''){
-      phoneNumber = customer.phoneNumber;
-    }
-    else{
-      phoneNumber = _phoneNumberController.text.trim();
-    }
-    if(_emailController.text.trim()==''){
-      email = customer.email;
-    }
-    else{
-      email = _emailController.text.trim();
-    }
-    if(_adressController.text.trim()==''){
-      adress = customer.address;
-    }
-    else{
-      adress = _adressController.text.trim();
-    }
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();    
+    final phoneNumber = _phoneNumberController.text.trim();
+    final email = _emailController.text.trim();
+    final adress = _adressController.text.trim();
 
     // Uppdatera kunddata
     final updateCustomer = Customer(
       firstName,
       lastName,
       phoneNumber,
-      customer.mobilePhoneNumber,
+      _mobilePhoneNumberController.text.trim(),
       email,
       adress,
-      customer.postCode,
-      customer.postAddress,
+      _postCodeController.text.trim(),
+      _postAdressController.text.trim(),
     );
     iMatHandler.setCustomer(updateCustomer);
 
@@ -180,8 +198,6 @@ class DeliveryPopupState extends State<DeliveryPopup> {
       user.password,
     );
     iMatHandler.setUser(updateUser);
-    pass = user.password;
-    print("user.password: $pass");
   }
   Widget _buildField({
     required String label,
