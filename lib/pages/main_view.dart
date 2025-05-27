@@ -214,9 +214,9 @@ class _MainViewState extends State<MainView> {
         // Filter to only show products that were in previous orders
         final purchasedProductIds = handler.orders
             .expand((order) => order.items)
-            .map((item) => item.product.name)
+            .map((item) => item.product.productId)
             .toSet();
-        list = list.where((p) => purchasedProductIds.contains(p.name)).toList();
+        list = list.where((p) => purchasedProductIds.contains(p.productId)).toList();
       }
 
       if (_productFilter.contains('Ekologiskt')) {

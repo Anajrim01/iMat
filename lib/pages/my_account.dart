@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/credit_card.dart';
 import 'package:imat_app/model/imat/customer.dart';
 import 'package:imat_app/model/imat/user.dart';
+import 'package:imat_app/model/imat/util/functions.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +42,13 @@ class _MyAccountState extends State<MyAccount> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _phoneNumberController.dispose();
+    _mobilePhoneNumberController.dispose();
     _emailController.dispose();
+    _adressController.dispose();
+    _postCodeController.dispose();
+    _postAdressController.dispose();
+    _passwordController.dispose();
     _cardTypeController.dispose();
     _holdersNameController.dispose();
     _validMonthController.dispose();
@@ -127,115 +135,455 @@ class _MyAccountState extends State<MyAccount> {
     final user = iMatHandler.getUser();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Account')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Account Information',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
+      appBar: const CustomMyAccountAppBar(),
+      body: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Page title
+                const Text(
+                  'Mitt Konto',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                ),
+                const Divider(thickness: 2, height: 32),
+                const SizedBox(height: 24),
 
-              if (_isEditing) ...[
-                TextField(
-                  controller: _firstNameController,
-                  decoration: const InputDecoration(labelText: 'First Name'),
-                ),
-                TextField(
-                  controller: _lastNameController,
-                  decoration: const InputDecoration(labelText: 'Last Name'),
-                ),
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-              ] else ...[
-                Text('Name: ${customer.firstName} ${customer.lastName}'),
-                Text('Email: ${customer.email}'),
-                Text('Lösenord: ${user.password}'),
-              ],
-
-              const SizedBox(height: 24),
-              const Text(
-                'Credit Card',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-
-              if (_isEditing) ...[
-                TextField(
-                  controller: _cardNumberController,
-                  decoration: const InputDecoration(labelText: 'Card Number'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  controller: _cardTypeController,
-                  decoration: const InputDecoration(labelText: 'Card Type'),
-                ),
-                TextField(
-                  controller: _holdersNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Holder\'s Name',
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _validMonthController,
-                        decoration: const InputDecoration(labelText: 'Month'),
-                        keyboardType: TextInputType.number,
+                // Personal information section
+                _buildSectionCard('Personuppgifter', [
+                  if (_isEditing) ...[
+                    _buildFormRow([
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _firstNameController,
+                          label: 'Förnamn',
+                        ),
                       ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _lastNameController,
+                          label: 'Efternamn',
+                        ),
+                      ),
+                    ]),
+                    _buildTextField(
+                      controller: _emailController,
+                      label: 'E-post',
+                      keyboardType: TextInputType.emailAddress,
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: TextField(
-                        controller: _validYearController,
-                        decoration: const InputDecoration(labelText: 'Year'),
-                        keyboardType: TextInputType.number,
+                    _buildTextField(
+                      controller: _passwordController,
+                      label: 'Lösenord',
+                      obscureText: true,
+                    ),
+                    _buildFormRow([
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _phoneNumberController,
+                          label: 'Telefon',
+                          keyboardType: TextInputType.phone,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _mobilePhoneNumberController,
+                          label: 'Mobil',
+                          keyboardType: TextInputType.phone,
+                        ),
+                      ),
+                    ]),
+                  ] else ...[
+                    _buildInfoRow(
+                      'Namn',
+                      '${customer.firstName} ${customer.lastName}',
+                    ),
+                    _buildInfoRow('E-post', customer.email),
+                    _buildInfoRow('Lösenord', '••••••••'),
+                    _buildFormRow([
+                      Expanded(
+                        child: _buildInfoRow('Telefon', customer.phoneNumber),
+                      ),
+                      Expanded(
+                        child: _buildInfoRow(
+                          'Mobil',
+                          customer.mobilePhoneNumber,
+                        ),
+                      ),
+                    ]),
+                  ],
+                ]),
+
+                const SizedBox(height: 24),
+
+                // Address section
+                _buildSectionCard('Leveransadress', [
+                  if (_isEditing) ...[
+                    _buildTextField(
+                      controller: _adressController,
+                      label: 'Gatuadress',
+                    ),
+                    _buildFormRow([
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _postCodeController,
+                          label: 'Postnummer',
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        flex: 2,
+                        child: _buildTextField(
+                          controller: _postAdressController,
+                          label: 'Ort',
+                        ),
+                      ),
+                    ]),
+                  ] else ...[
+                    _buildInfoRow('Adress', customer.address),
+                    _buildFormRow([
+                      Expanded(
+                        child: _buildInfoRow('Postnummer', customer.postCode),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: _buildInfoRow('Ort', customer.postAddress),
+                      ),
+                    ]),
+                  ],
+                ]),
+
+                const SizedBox(height: 24),
+
+                // Payment information section
+                _buildSectionCard('Betalningsinformation', [
+                  if (_isEditing) ...[
+                    _buildTextField(
+                      controller: _cardNumberController,
+                      label: 'Kortnummer',
+                      keyboardType: TextInputType.number,
+                    ),
+                    _buildTextField(
+                      controller: _holdersNameController,
+                      label: 'Kortinnehavare',
+                    ),
+                    _buildFormRow([
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          value:
+                              _cardTypeController.text.isEmpty
+                                  ? null
+                                  : _cardTypeController.text,
+                          decoration: InputDecoration(
+                            labelText: 'Korttyp',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.borderRadius,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
+                          ),
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'Visa',
+                              child: Text('Visa'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Mastercard',
+                              child: Text('Mastercard'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'American Express',
+                              child: Text('American Express'),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) {
+                              _cardTypeController.text = value;
+                            }
+                          },
+                        ),
+                      ),
+                    ]),
+                    const SizedBox(height: 16),
+                    _buildFormRow([
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _validMonthController,
+                          label: 'Månad',
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _validYearController,
+                          label: 'År',
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _verificationCodeController,
+                          label: 'CVC',
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ]),
+                  ] else if (creditCard.cardNumber.isNotEmpty) ...[
+                    _buildInfoRow(
+                      'Kortnummer',
+                      formatCardNumber(creditCard.cardNumber),
+                    ),
+                    _buildInfoRow('Kortinnehavare', creditCard.holdersName),
+                    _buildInfoRow(
+                      'Korttyp',
+                      detectCardType(creditCard.cardNumber) ??
+                          creditCard.cardType,
+                    ),
+                    _buildFormRow([
+                      Expanded(
+                        child: _buildInfoRow(
+                          'Giltigt till',
+                          '${creditCard.validMonth}/${creditCard.validYear}',
+                        ),
+                      ),
+                      Expanded(child: _buildInfoRow('CVC', '***')),
+                    ]),
+                  ] else ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.credit_card_off,
+                              size: 48,
+                              color: Colors.grey[400],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Inget betalkort tillagt',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Klicka på "Redigera uppgifter" för att lägga till betalinformation',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
-                ),
-                TextField(
-                  controller: _verificationCodeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Verification Code',
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => _saveChanges(context),
-                  child: const Text('Save Changes'),
-                ),
-              ] else ...[
-                Text('Card Number: ${creditCard.cardNumber}'),
-                Text('Card Type: ${creditCard.cardType}'),
-                Text('Holder: ${creditCard.holdersName}'),
-                Text(
-                  'Expires: ${creditCard.validMonth}/${creditCard.validYear}',
-                ),
-                const SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () => _startEditing(customer, user, creditCard),
+                ]),
 
-                  child: const Text('Edit Account'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    print(iMatHandler.getCustomer().email);
-                  },
-                  child: Text('Click Me'),
+                const SizedBox(height: 32),
+
+                // Action buttons
+                Center(
+                  child: SizedBox(
+                    width: 300,
+                    child:
+                        _isEditing
+                            ? Row(
+                              children: [
+                                Expanded(
+                                  child: _buildButton(
+                                    'Avbryt',
+                                    onPressed: () {
+                                      setState(() {
+                                        _isEditing = false;
+                                      });
+                                    },
+                                    backgroundColor: Colors.grey[200],
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: _buildButton(
+                                    'Spara',
+                                    onPressed: () => _saveChanges(context),
+                                  ),
+                                ),
+                              ],
+                            )
+                            : _buildButton(
+                              'Redigera uppgifter',
+                              onPressed:
+                                  () =>
+                                      _startEditing(customer, user, creditCard),
+                            ),
+                  ),
                 ),
               ],
-            ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSectionCard(String title, List<Widget> children) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            const Divider(thickness: 1),
+            const SizedBox(height: 16),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    bool obscureText = false,
+    TextInputType? keyboardType,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFormRow(List<Widget> children) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
+  Widget _buildButton(
+    String text, {
+    required VoidCallback onPressed,
+    Color? backgroundColor,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor ?? Colors.purple[100],
+        foregroundColor: Colors.black,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        ),
+      ),
+      child: Text(text),
+    );
+  }
+}
+
+class CustomMyAccountAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  const CustomMyAccountAppBar({super.key});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(80);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      toolbarHeight: 80,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          Text(
+            'I',
+            style: TextStyle(color: AppTheme.colorScheme.primary, fontSize: 50),
+          ),
+          const Text('Mat', style: TextStyle(fontSize: 50)),
+          const Spacer(),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.home_outlined, size: 24),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFF3E5F5),
+              foregroundColor: Colors.black,
+              elevation: 2,
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+              fixedSize: Size(170, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+              ),
+            ),
+            label: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+              child: Text('Hem'),
+            ),
+          ),
+        ],
       ),
     );
   }

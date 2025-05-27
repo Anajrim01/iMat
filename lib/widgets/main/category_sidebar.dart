@@ -21,7 +21,7 @@ class CategorySidebar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Title (not scrollable)
+          // Title
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 1),
             child: Text(
