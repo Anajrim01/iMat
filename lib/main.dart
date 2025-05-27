@@ -4,6 +4,7 @@ import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/pages/main_view.dart';
 import 'package:imat_app/pages/order_history_view.dart';
 import 'package:provider/provider.dart';
+import 'package:imat_app/model/imat/user_manager.dart';
 
 void main() {
   runApp(

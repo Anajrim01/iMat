@@ -207,7 +207,6 @@ class _ShoppingCartViewState extends State<ShoppingCartView>{
                     label: const Text('Fortsätt'),
                     onPressed: (){
                       _changePage(page_number+1);
-                      print(page_number);
                     }, 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF3E5F5),

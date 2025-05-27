@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart' show ImatDataHandler;
 import 'package:imat_app/pages/main_view.dart';
-import 'package:imat_app/widgets/main/user_manager.dart';
+import 'package:imat_app/model/imat/user_manager.dart';
 import 'package:provider/provider.dart';
-
-
 
 class LoginView extends StatelessWidget {
   final VoidCallback onSwitchToRegister;
@@ -17,24 +15,25 @@ class LoginView extends StatelessWidget {
     final _emailController = TextEditingController();
     final _passwordController = TextEditingController();
 
-  void _login() {
-  final userManager = Provider.of<UserManager>(context, listen: false);
-  final email = _emailController.text.trim();
-  final password = _passwordController.text;
-  final imatHandler = Provider.of<ImatDataHandler>(context, listen: false);
-  final user = imatHandler.getUser();
+    void _login() {
+      final userManager = Provider.of<UserManager>(context, listen: false);
+      final email = _emailController.text.trim();
+      final password = _passwordController.text;
+      final imatHandler = Provider.of<ImatDataHandler>(context, listen: false);
+      final user = imatHandler.getUser();
 
-  if (user != null && user.userName == email && user.password == password) {
-    userManager.logIn();
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainView()),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Fel e-post eller lösenord")),
-    );
-  }
-}
-
+      if (user.userName == email && user.password == password) {
+        userManager.logIn();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainView()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Fel e-post eller lösenord")),
+        );
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -56,7 +55,10 @@ class LoginView extends StatelessWidget {
                   children: [
                     const Text(
                       "Logga in",
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),
@@ -78,7 +80,9 @@ class LoginView extends StatelessWidget {
                           vertical: AppTheme.paddingMedium,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadius,
+                          ),
                         ),
                         textStyle: AppTheme.textTheme.headlineSmall,
                       ),
@@ -97,7 +101,9 @@ class LoginView extends StatelessWidget {
                           vertical: AppTheme.paddingMedium,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadius,
+                          ),
                         ),
                         textStyle: AppTheme.textTheme.headlineSmall,
                       ),
@@ -137,7 +143,9 @@ class LoginView extends StatelessWidget {
                         vertical: AppTheme.paddingMedium,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.borderRadiusLarge,
+                        ),
                       ),
                       textStyle: AppTheme.textTheme.bodyLarge,
                     ),
@@ -146,7 +154,7 @@ class LoginView extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -173,7 +181,10 @@ class LoginView extends StatelessWidget {
             hintText: hintText,
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Colors.greenAccent),
@@ -188,6 +199,3 @@ class LoginView extends StatelessWidget {
     );
   }
 }
-
-
-

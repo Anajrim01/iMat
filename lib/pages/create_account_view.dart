@@ -3,19 +3,12 @@ import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/customer.dart';
 import 'package:imat_app/model/imat/user.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
-
-
-
-
-
 
 class CreateAccountView extends StatelessWidget {
   final VoidCallback onSwitchToLogin;
 
   CreateAccountView({super.key, required this.onSwitchToLogin});
-
 
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -26,13 +19,7 @@ class CreateAccountView extends StatelessWidget {
   final _postCodeController = TextEditingController();
   final _postAdressController = TextEditingController();
 
-
   final _passwordController = TextEditingController();
-
-
-
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +37,15 @@ class CreateAccountView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Skapa ditt konto",
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),
@@ -65,7 +54,7 @@ class CreateAccountView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-               
+
                 Row(
                   children: [
                     OutlinedButton(
@@ -77,7 +66,9 @@ class CreateAccountView extends StatelessWidget {
                           vertical: AppTheme.paddingMedium,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadius,
+                          ),
                         ),
                         textStyle: AppTheme.textTheme.headlineSmall,
                       ),
@@ -96,7 +87,9 @@ class CreateAccountView extends StatelessWidget {
                           vertical: AppTheme.paddingMedium,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadius,
+                          ),
                         ),
                         textStyle: AppTheme.textTheme.headlineSmall,
                       ),
@@ -109,60 +102,54 @@ class CreateAccountView extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-
-
-                  Row(
+                Row(
                   children: [
-          Expanded(
-          child: _buildField(
-                  label: "Förnamn",
-                  controller: _firstNameController,
-                  hintText: "namn",
-                  ),
-                  ),
-                const SizedBox(width: 16),
-          Expanded(
-          child: _buildField(
-                  label: "Efternamn",
-                  controller: _lastNameController,
-                  hintText: "efternamn",
-                  ),
-                  ),
-                 ],
+                    Expanded(
+                      child: _buildField(
+                        label: "Förnamn",
+                        controller: _firstNameController,
+                        hintText: "namn",
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildField(
+                        label: "Efternamn",
+                        controller: _lastNameController,
+                        hintText: "efternamn",
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
 
-                      
-                      
                 Row(
-                children: [
-          Expanded(
-          child: _buildField(
-                  label: "E-postadress/Användarnamn",
-                  controller: _emailController,
-                  hintText: "namn@gmail.com",
-                ),
-                
-                  ),
-                const SizedBox(width: 16),
-          Expanded(
-          child: _buildField(
-                  label: "Lösenord",
-                  controller: _passwordController,
-                  hintText: "lösenord",
-                  obscure: true,
-                  ),
-                  ),
-                 ],
+                  children: [
+                    Expanded(
+                      child: _buildField(
+                        label: "E-postadress/Användarnamn",
+                        controller: _emailController,
+                        hintText: "namn@gmail.com",
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildField(
+                        label: "Lösenord",
+                        controller: _passwordController,
+                        hintText: "lösenord",
+                        obscure: true,
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 8),
-                _buildBulletText("Detta kommer vara ditt användar-id när du loggar in"),
-                
+                _buildBulletText(
+                  "Detta kommer vara ditt användar-id när du loggar in",
+                ),
 
-          
-              
-          /*    IntlPhoneField(
+                /*    IntlPhoneField(
               decoration: InputDecoration(
                border: OutlineInputBorder(
               borderSide: BorderSide(), //Cool inlogg grej
@@ -175,23 +162,18 @@ class CreateAccountView extends StatelessWidget {
                print(phone.completeNumber);
                },
               ),*/
-                
-                
-
-
                 const SizedBox(height: 20),
                 _buildField(
                   label: "Mobilnummer",
                   controller: _mobilePhoneNumberController,
                   hintText: "123-456-7890",
                 ),
-                
+
                 _buildField(
                   label: "Nummer",
                   controller: _phoneNumberController,
                   hintText: "123-456-7890",
                 ),
-
 
                 _buildField(
                   label: "Adress",
@@ -211,40 +193,38 @@ class CreateAccountView extends StatelessWidget {
 
                 const SizedBox(height: 32),
 
-
-
                 Center(
-                  
                   child: ElevatedButton(
                     onPressed: () {
-                      var iMatHandler = Provider.of<ImatDataHandler>(context, listen: false);
-                        // Create the Customer object from the input fields
+                      var iMatHandler = Provider.of<ImatDataHandler>(
+                        context,
+                        listen: false,
+                      );
+                      // Create the Customer object from the input fields
                       Customer newCustomer = Customer(
-                        
-                          _firstNameController.text.trim(),
-                          _lastNameController.text.trim(),
-                          _phoneNumberController.text.trim(),
-                          _mobilePhoneNumberController.text.trim(),
-                          _emailController.text.trim(),
-                          _adressController.text.trim(),
-                          _postCodeController.text.trim(),
-                          _postAdressController.text.trim(),
-                          );
+                        _firstNameController.text.trim(),
+                        _lastNameController.text.trim(),
+                        _phoneNumberController.text.trim(),
+                        _mobilePhoneNumberController.text.trim(),
+                        _emailController.text.trim(),
+                        _adressController.text.trim(),
+                        _postCodeController.text.trim(),
+                        _postAdressController.text.trim(),
+                      );
 
                       User newUser = User(
-                          _emailController.text.trim(),
-                          _passwordController.text.trim(),
+                        _emailController.text.trim(),
+                        _passwordController.text.trim(),
                       );
-                    
-  
-  // Set the customer and user using the handler
-  iMatHandler.setCustomer(newCustomer);
-  iMatHandler.setUser(newUser);
 
-  // Optionally show confirmation or navigate to another screen
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Kundinformation sparad!')),
-  );
+                      // Set the customer and user using the handler
+                      iMatHandler.setCustomer(newCustomer);
+                      iMatHandler.setUser(newUser);
+
+                      // Optionally show confirmation or navigate to another screen
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Kundinformation sparad!')),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.colorScheme.primary,
@@ -253,7 +233,9 @@ class CreateAccountView extends StatelessWidget {
                         vertical: AppTheme.paddingMedium,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.borderRadiusLarge,
+                        ),
                       ),
                       textStyle: AppTheme.textTheme.bodyLarge,
                     ),
@@ -262,7 +244,7 @@ class CreateAccountView extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -299,7 +281,10 @@ class CreateAccountView extends StatelessWidget {
             hintText: hintText,
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Colors.greenAccent),
@@ -324,4 +309,3 @@ class CreateAccountView extends StatelessWidget {
     );
   }
 }
-

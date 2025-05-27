@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/pages/AuthDialogView.dart';
-import 'package:imat_app/pages/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/model/imat/product.dart';
+import 'package:imat_app/model/imat/user_manager.dart';
+
+import '../../pages/my_account.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Function()? onCartPressed;

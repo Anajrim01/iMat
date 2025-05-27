@@ -55,17 +55,17 @@ class _MyAccountState extends State<MyAccount> {
       _isEditing = true;
 
       // Init kundfält
-        _firstNameController.text = customer.firstName;
-        _lastNameController.text = customer.lastName;
-        _phoneNumberController.text = customer.phoneNumber;
-        _mobilePhoneNumberController.text = customer.mobilePhoneNumber;
-        _emailController.text = customer.email;
-        _adressController.text = customer.address;
-        _postCodeController.text = customer.postCode;
-        _postAdressController.text = customer.postAddress;
+      _firstNameController.text = customer.firstName;
+      _lastNameController.text = customer.lastName;
+      _phoneNumberController.text = customer.phoneNumber;
+      _mobilePhoneNumberController.text = customer.mobilePhoneNumber;
+      _emailController.text = customer.email;
+      _adressController.text = customer.address;
+      _postCodeController.text = customer.postCode;
+      _postAdressController.text = customer.postAddress;
 
       // Init password
-        _passwordController.text = user.password;
+      _passwordController.text = user.password;
 
       // Init kortfält
       if (creditCard != null) {
@@ -74,7 +74,8 @@ class _MyAccountState extends State<MyAccount> {
         _validMonthController.text = creditCard.validMonth.toString();
         _validYearController.text = creditCard.validYear.toString();
         _cardNumberController.text = creditCard.cardNumber;
-        _verificationCodeController.text = creditCard.verificationCode.toString();
+        _verificationCodeController.text =
+            creditCard.verificationCode.toString();
       }
     });
   }
@@ -84,21 +85,21 @@ class _MyAccountState extends State<MyAccount> {
 
     // Uppdatera kunddata
     final updateCustomer = Customer(
-        _firstNameController.text.trim(),
-        _lastNameController.text.trim(),
-        _phoneNumberController.text.trim(),
-        _mobilePhoneNumberController.text.trim(),
-        _emailController.text.trim(),
-        _adressController.text.trim(),
-        _postCodeController.text.trim(),
-        _postAdressController.text.trim(),
+      _firstNameController.text.trim(),
+      _lastNameController.text.trim(),
+      _phoneNumberController.text.trim(),
+      _mobilePhoneNumberController.text.trim(),
+      _emailController.text.trim(),
+      _adressController.text.trim(),
+      _postCodeController.text.trim(),
+      _postAdressController.text.trim(),
     );
     iMatHandler.setCustomer(updateCustomer);
 
     //Måste också uppdatera user
     final updateUser = User(
       _emailController.text.trim(),
-      _passwordController.text.trim()
+      _passwordController.text.trim(),
     );
     iMatHandler.setUser(updateUser);
 
@@ -177,7 +178,9 @@ class _MyAccountState extends State<MyAccount> {
                 ),
                 TextField(
                   controller: _holdersNameController,
-                  decoration: const InputDecoration(labelText: 'Holder\'s Name'),
+                  decoration: const InputDecoration(
+                    labelText: 'Holder\'s Name',
+                  ),
                 ),
                 Row(
                   children: [
@@ -200,7 +203,9 @@ class _MyAccountState extends State<MyAccount> {
                 ),
                 TextField(
                   controller: _verificationCodeController,
-                  decoration: const InputDecoration(labelText: 'Verification Code'),
+                  decoration: const InputDecoration(
+                    labelText: 'Verification Code',
+                  ),
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 16),
@@ -209,22 +214,24 @@ class _MyAccountState extends State<MyAccount> {
                   child: const Text('Save Changes'),
                 ),
               ] else ...[
-                Text('Card Number: ${creditCard?.cardNumber ?? 'N/A'}'),
-                Text('Card Type: ${creditCard?.cardType ?? 'N/A'}'),
-                Text('Holder: ${creditCard?.holdersName ?? 'N/A'}'),
-                Text('Expires: ${creditCard?.validMonth}/${creditCard?.validYear}'),
+                Text('Card Number: ${creditCard.cardNumber}'),
+                Text('Card Type: ${creditCard.cardType}'),
+                Text('Holder: ${creditCard.holdersName}'),
+                Text(
+                  'Expires: ${creditCard.validMonth}/${creditCard.validYear}',
+                ),
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () => _startEditing(customer, user, creditCard),
-                  
+
                   child: const Text('Edit Account'),
                 ),
                 ElevatedButton(
-                onPressed: () {
-                print(iMatHandler.getCustomer().email);
-                          },
-                child: Text('Click Me'),
-                )
+                  onPressed: () {
+                    print(iMatHandler.getCustomer().email);
+                  },
+                  child: Text('Click Me'),
+                ),
               ],
             ],
           ),
