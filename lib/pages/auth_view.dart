@@ -15,7 +15,9 @@ class _AuthDialogState extends State<AuthDialog> {
   bool _showLogin = true;
   bool _isCreatingAccount = false;
 
-  // Controllers
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -23,7 +25,6 @@ class _AuthDialogState extends State<AuthDialog> {
   final _lastNameController = TextEditingController();
   final _mobilePhoneNumberController = TextEditingController();
 
-  // Error states
   String? _emailError;
   String? _passwordError;
   String? _phoneError;
@@ -41,6 +42,21 @@ class _AuthDialogState extends State<AuthDialog> {
       _emailError = null;
       _passwordError = null;
       _phoneError = null;
+      // Reset password visibility
+      _passwordVisible = false;
+      _confirmPasswordVisible = false;
+    });
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _passwordVisible = !_passwordVisible;
+    });
+  }
+
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      _confirmPasswordVisible = !_confirmPasswordVisible;
     });
   }
 
@@ -303,14 +319,17 @@ class _AuthDialogState extends State<AuthDialog> {
 
           const SizedBox(height: 16),
 
-          // Password field
+          // Password field with visibility toggle
           _buildTextField(
             controller: _passwordController,
             label: "Lösenord",
             hintText: "Ditt lösenord",
             icon: Icons.lock_outline,
             errorText: _passwordError,
-            obscureText: true,
+            obscureText: !_passwordVisible,
+            isPassword: true,
+            onTogglePasswordVisibility: _togglePasswordVisibility,
+            passwordVisible: _passwordVisible,
           ),
 
           const SizedBox(height: 24),
@@ -445,7 +464,10 @@ class _AuthDialogState extends State<AuthDialog> {
                     hintText: "Minst 6 tecken",
                     icon: Icons.lock_outline,
                     errorText: _passwordError,
-                    obscureText: true,
+                    obscureText: !_passwordVisible,
+                    isPassword: true,
+                    onTogglePasswordVisibility: _togglePasswordVisibility,
+                    passwordVisible: _passwordVisible,
                   ),
 
                   const SizedBox(height: 16),
@@ -455,7 +477,11 @@ class _AuthDialogState extends State<AuthDialog> {
                     label: "Bekräfta lösenord",
                     hintText: "Upprepa lösenord",
                     icon: Icons.lock_outline,
-                    obscureText: true,
+                    obscureText: !_confirmPasswordVisible,
+                    isPassword: true,
+                    onTogglePasswordVisibility:
+                        _toggleConfirmPasswordVisibility,
+                    passwordVisible: _confirmPasswordVisible,
                   ),
 
                   const SizedBox(height: 24),
@@ -529,6 +555,9 @@ class _AuthDialogState extends State<AuthDialog> {
     String? errorText,
     bool obscureText = false,
     TextInputType keyboardType = TextInputType.text,
+    bool isPassword = false,
+    bool passwordVisible = false,
+    VoidCallback? onTogglePasswordVisibility,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -567,6 +596,24 @@ class _AuthDialogState extends State<AuthDialog> {
               borderSide: const BorderSide(color: Colors.red),
             ),
             errorStyle: const TextStyle(fontWeight: FontWeight.bold),
+            suffixIcon:
+                isPassword
+                    ? IconButton(
+                      icon: Icon(
+                        passwordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color:
+                            passwordVisible
+                                ? AppTheme.colorScheme.primary
+                                : Colors.grey,
+                        size: 20,
+                      ),
+                      onPressed: onTogglePasswordVisibility,
+                      tooltip:
+                          passwordVisible ? 'Dölj lösenord' : 'Visa lösenord',
+                    )
+                    : null,
           ),
         ),
       ],
