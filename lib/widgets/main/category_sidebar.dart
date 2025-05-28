@@ -153,6 +153,9 @@ class CategorySidebar extends StatelessWidget {
     );
   }
 
+  // Cache for SVG existence check results to avoid repeated checks
+  static final Map<String, bool> _svgExistsCache = {};
+  
   Widget _buildCategoryIcon(String categoryName, bool isSelected) {
     final Color iconColor =
         isSelected ? AppTheme.colorScheme.primary : Colors.grey[600]!;
@@ -160,9 +163,14 @@ class CategorySidebar extends StatelessWidget {
     // Path to the SVG icon
     final String iconPath = 'assets/icons/categories/${categoryName.toLowerCase()}.svg';
     
-    // Use DefaultAssetBundle to check if the asset exists
+    // Check cache first before attempting to load
     return FutureBuilder<bool>(
-      future: _checkAssetExists(iconPath), // Workaround to check if the SVG exists as non-existent assets will throw an error (try catch won't work?)
+      future: _svgExistsCache.containsKey(iconPath) 
+          ? Future.value(_svgExistsCache[iconPath]) 
+          : _checkAssetExists(iconPath).then((exists) {
+              _svgExistsCache[iconPath] = exists;
+              return exists;
+            }),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done && 
             snapshot.hasData && 
