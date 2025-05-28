@@ -35,27 +35,30 @@ class ProductGrid extends StatelessWidget {
       return _buildEmptySearchResults();
     }
 
+    // make this responsive 
+    final screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = 3;
+    if (screenWidth < 600) {
+      crossAxisCount = 2;
+    }
+
     // Product grid with products
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.only(bottom: AppTheme.paddingMedium),
-            itemCount: products.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: AppTheme.paddingTiny,
-              mainAxisSpacing: AppTheme.paddingTiny,
-              childAspectRatio: 200 / 215,
-            ),
-            itemBuilder: (_, i) {
-              final p = products[i];
-              return ProductCard(p, handler, key: ValueKey(p.productId));
-            },
-          ),
-        ),
-      ],
+    return GridView.builder(
+      padding: const EdgeInsets.all(AppTheme.paddingTiny),
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: products.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: AppTheme.paddingTiny,
+        mainAxisSpacing: AppTheme.paddingTiny,
+        childAspectRatio: screenWidth > 1800 ? 1.15 : 
+             (screenWidth >= 1600 ? 1.0 : 
+             (screenWidth >= 1440 ? 0.8 : 0.65)),
+      ),
+      itemBuilder: (_, i) {
+        final p = products[i];
+        return ProductCard(p, handler, key: ValueKey(p.productId));
+      },
     );
   }
 

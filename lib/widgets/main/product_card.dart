@@ -241,16 +241,14 @@ class _ProductCardState extends State<ProductCard> {
                 _isHovered
                     ? [
                       BoxShadow(
-                        color: Colors.deepPurple.withAlpha(
-                          50,
-                        ), // Adjusted alpha
+                        color: Colors.deepPurple.withAlpha(50),
                         blurRadius: 16,
                         offset: const Offset(0, 8),
                       ),
                     ]
                     : [
                       BoxShadow(
-                        color: Colors.black.withAlpha(12), // Adjusted alpha
+                        color: Colors.black.withAlpha(12),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -451,7 +449,11 @@ class _DescriptionMerInfo extends StatelessWidget {
           child: Text(
             detail?.description ?? '',
             style: Theme.of(context).textTheme.bodyLarge,
-            maxLines: 3, // nån rad färre i kortet
+            maxLines: MediaQuery.of(context).size.width > 1800 
+              ? 3 
+              : (MediaQuery.of(context).size.width >= 1280 
+                ? 2 
+                : 1),
             overflow: TextOverflow.ellipsis,
           ),
         ),
