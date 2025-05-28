@@ -254,7 +254,7 @@ class BuyoutCartBar extends StatelessWidget {
                           minimumSize: const Size(
                             100,
                             48,
-                          ), // Increased button size
+                          ), 
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 12,
@@ -299,10 +299,10 @@ class BuyoutCartBar extends StatelessWidget {
                     const SizedBox(height: 18),
                     Row(
                       children: [
-                        // Decrease button
+                        
                         Container(
-                          width: 48, // Increased button size
-                          height: 48, // Increased button size
+                          width: 48, 
+                          height: 48, 
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: const BorderRadius.only(
@@ -314,7 +314,7 @@ class BuyoutCartBar extends StatelessWidget {
                             icon: const Icon(
                               Icons.remove,
                               size: 22,
-                            ), // Increased icon size
+                            ), 
                             padding: EdgeInsets.zero,
                             onPressed: () {
                               handler.shoppingCartUpdate(item, delta: -1.0);
@@ -325,7 +325,7 @@ class BuyoutCartBar extends StatelessWidget {
                         // Quantity display
                         Container(
                           width: 60,
-                          height: 48, // Increased height
+                          height: 48,
                           alignment: Alignment.center,
                           color: Colors.white,
                           child: Text(
@@ -339,8 +339,8 @@ class BuyoutCartBar extends StatelessWidget {
 
                         // Increase button
                         Container(
-                          width: 48, // Increased button size
-                          height: 48, // Increased button size
+                          width: 48, 
+                          height: 48, 
                           decoration: BoxDecoration(
                             color: AppTheme.colorScheme.primary,
                             borderRadius: const BorderRadius.only(
@@ -351,7 +351,7 @@ class BuyoutCartBar extends StatelessWidget {
                           child: IconButton(
                             icon: const Icon(
                               Icons.add,
-                              size: 22, // Increased icon size
+                              size: 22, 
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.zero,

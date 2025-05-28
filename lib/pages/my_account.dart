@@ -554,11 +554,24 @@ class CustomMyAccountAppBar extends StatelessWidget
       automaticallyImplyLeading: false,
       title: Row(
         children: [
-          Text(
-            'I',
-            style: TextStyle(color: AppTheme.colorScheme.primary, fontSize: 50),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/');
+            },
+            child: Row(
+              children: [
+                Text(
+                  'I',
+                  style: TextStyle(
+                    color: AppTheme.colorScheme.primary,
+                    fontSize: 50,
+                  ),
+                ),
+                const Text('Mat', style: TextStyle(fontSize: 50)),
+                const SizedBox(width: 120),
+              ],
+            ),
           ),
-          const Text('Mat', style: TextStyle(fontSize: 50)),
           const Spacer(),
           ElevatedButton.icon(
             onPressed: () {

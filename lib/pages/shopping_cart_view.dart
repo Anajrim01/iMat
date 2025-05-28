@@ -40,18 +40,23 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
         toolbarHeight: 80,
         title: Row(
           children: [
-            // iMat logo
-            Row(
-              children: [
-                Text(
-                  'I',
-                  style: TextStyle(
-                    color: AppTheme.colorScheme.primary,
-                    fontSize: 50,
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/');
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'I',
+                    style: TextStyle(
+                      color: AppTheme.colorScheme.primary,
+                      fontSize: 50,
+                    ),
                   ),
-                ),
-                const Text('Mat', style: TextStyle(fontSize: 50)),
-              ],
+                  const Text('Mat', style: TextStyle(fontSize: 50)),
+                  const SizedBox(width: 120),
+                ],
+              ),
             ),
 
             const Spacer(),
@@ -97,7 +102,10 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                     ? BuyoutCartBar(handler: handler)
                     : _currentStep == 2
                     ? BuyoutDelivery(key: _deliveryKey)
-                    : BuyoutPayment(handler: handler, deliveryTime: _deliveryTime),
+                    : BuyoutPayment(
+                      handler: handler,
+                      deliveryTime: _deliveryTime,
+                    ),
           ),
         ],
       ),

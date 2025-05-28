@@ -355,12 +355,25 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       title: Row(
         children: [
-          Text(
-            'I',
-            style: TextStyle(color: AppTheme.colorScheme.primary, fontSize: 50),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/');
+              _removeOverlay(); // Remove overlay when navigating
+            },
+            child: Row(
+              children: [
+                Text(
+                  'I',
+                  style: TextStyle(
+                    color: AppTheme.colorScheme.primary,
+                    fontSize: 50,
+                  ),
+                ),
+                const Text('Mat', style: TextStyle(fontSize: 50)),
+                const SizedBox(width: 120),
+              ],
+            ),
           ),
-          const Text('Mat', style: TextStyle(fontSize: 50)),
-          const SizedBox(width: 120),
 
           // Search bar
           Expanded(
