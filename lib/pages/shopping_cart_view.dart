@@ -17,6 +17,7 @@ class ShoppingCartView extends StatefulWidget {
 
 class _ShoppingCartViewState extends State<ShoppingCartView> {
   int _currentStep = 1;
+  String _deliveryTime = '';
 
   // Keys to access child widget states
   final GlobalKey<BuyoutDeliveryState> _deliveryKey =
@@ -96,7 +97,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                     ? BuyoutCartBar(handler: handler)
                     : _currentStep == 2
                     ? BuyoutDelivery(key: _deliveryKey)
-                    : BuyoutPayment(handler: handler),
+                    : BuyoutPayment(handler: handler, deliveryTime: _deliveryTime),
           ),
         ],
       ),
@@ -314,6 +315,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
           );
           return;
         }
+        _deliveryTime = deliveryState.getSelectedTime();
 
         // All validations passed, proceed to next step
         _navigateToStep(nextStep);
@@ -389,57 +391,4 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
           ),
     );
   }
-
-// todo: implement this or something
-  // void _showOrderConfirmation() {
-  //   final handler = Provider.of<ImatDataHandler>(context, listen: false);
-  //   handler.placeOrder();
-  //   showDialog(
-  //     context: context,
-  //     builder:
-  //         (context) => AlertDialog(
-  //           title: const Row(
-  //             children: [
-  //               Icon(Icons.check_circle, color: Colors.green, size: 24),
-  //               SizedBox(width: 8),
-  //               Text(
-  //                 'Tack för din beställning!',
-  //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-  //               ),
-  //             ],
-  //           ),
-  //           content: const Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 'Din beställning har tagits emot och kommer att levereras enligt vald leveranstid.',
-  //                 style: TextStyle(fontSize: 15),
-  //               ),
-  //               SizedBox(height: 12),
-  //               Text(
-  //                 'En orderbekräftelse har skickats till din e-post.',
-  //                 style: TextStyle(fontSize: 15),
-  //               ),
-  //             ],
-  //           ),
-  //           actions: [
-  //             ElevatedButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context); // Close dialog
-  //                 Navigator.pop(context); // Close shopping cart view
-  //               },
-  //               style: ElevatedButton.styleFrom(
-  //                 backgroundColor: AppTheme.colorScheme.primary,
-  //                 foregroundColor: Colors.white,
-  //               ),
-  //               child: const Text('Tillbaka till butiken'),
-  //             ),
-  //           ],
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-  //           ),
-  //         ),
-  //   );
-  // }
 }

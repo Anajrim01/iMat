@@ -57,6 +57,15 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
     return selectedTime != null;
   }
 
+  String getSelectedTime() {
+    if (selectedTime != null) {
+      return selectedTime!;
+    } else {
+      return "Ingen tid vald";
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final userManager = Provider.of<UserManager>(context);
