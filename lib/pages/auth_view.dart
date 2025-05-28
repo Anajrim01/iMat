@@ -32,7 +32,7 @@ class _AuthDialogState extends State<AuthDialog> {
   void _toggleView() {
     setState(() {
       _showLogin = !_showLogin;
-      // Clear fields and errors when switching views
+      // reset
       _emailController.clear();
       _passwordController.clear();
       _confirmPasswordController.clear();
@@ -42,7 +42,6 @@ class _AuthDialogState extends State<AuthDialog> {
       _emailError = null;
       _passwordError = null;
       _phoneError = null;
-      // Reset password visibility
       _passwordVisible = false;
       _confirmPasswordVisible = false;
     });
@@ -68,7 +67,6 @@ class _AuthDialogState extends State<AuthDialog> {
       _passwordError = null;
     });
 
-    // Validate email
     if (_emailController.text.isEmpty) {
       setState(() {
         _emailError = "E-postadress krävs";
@@ -76,7 +74,6 @@ class _AuthDialogState extends State<AuthDialog> {
       isValid = false;
     }
 
-    // Validate password
     if (_passwordController.text.isEmpty) {
       setState(() {
         _passwordError = "Lösenord krävs";
@@ -93,9 +90,9 @@ class _AuthDialogState extends State<AuthDialog> {
     setState(() {
       _emailError = null;
       _passwordError = null;
+      _phoneError = null;
     });
 
-    // Validate email
     if (_emailController.text.isEmpty) {
       setState(() {
         _emailError = "E-postadress krävs";
@@ -110,7 +107,6 @@ class _AuthDialogState extends State<AuthDialog> {
       isValid = false;
     }
 
-    // Validate phone number
     if (_mobilePhoneNumberController.text.isNotEmpty &&
         !RegExp(
           r'^(?:\+?46|0)[0-9]{7,12}$',
@@ -121,7 +117,6 @@ class _AuthDialogState extends State<AuthDialog> {
       isValid = false;
     }
 
-    // Validate password
     if (_passwordController.text.isEmpty) {
       setState(() {
         _passwordError = "Lösenord krävs";
@@ -134,7 +129,6 @@ class _AuthDialogState extends State<AuthDialog> {
       isValid = false;
     }
 
-    // Validate password confirmation
     if (_confirmPasswordController.text != _passwordController.text) {
       setState(() {
         _passwordError = "Lösenorden matchar inte";
@@ -215,51 +209,66 @@ class _AuthDialogState extends State<AuthDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final double registrationFormMaxHeight =
+        MediaQuery.of(context).size.height * 0.8; // 80% av skrmen
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.borderRadius),
       ),
       elevation: 8,
-      child: Container(
-        width: 480,
-        constraints: const BoxConstraints(maxWidth: 480),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'I',
-                        style: TextStyle(
-                          color: AppTheme.colorScheme.primary,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: 480,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'I',
+                          style: TextStyle(
+                            color: AppTheme.colorScheme.primary,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const Text(
-                        'Mat',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+                        const Text(
+                          'Mat',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            _showLogin ? _buildLoginForm() : _buildRegisterForm(),
-          ],
+              if (_showLogin)
+                _buildLoginForm()
+              else
+                Container(
+                  constraints: BoxConstraints(
+                    maxHeight: registrationFormMaxHeight,
+                  ),
+                  child: _buildRegisterForm(),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -268,103 +277,101 @@ class _AuthDialogState extends State<AuthDialog> {
   Widget _buildLoginForm() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 32.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Title
-          const Text(
-            "Logga in på ditt konto",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Logga in på ditt konto",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
 
-          const SizedBox(height: 8),
+            const SizedBox(height: 8),
 
-          Wrap(
-            alignment: WrapAlignment.start,
-            children: [
-              Text(
-                "Ange dina uppgifter nedan för att logga in. ",
-                style: TextStyle(color: Colors.grey[700], fontSize: 14),
-              ),
-              Text(
-                "Ny kund? ",
-                style: TextStyle(color: Colors.grey[700], fontSize: 14),
-              ),
-              GestureDetector(
-                onTap: _toggleView,
-                child: Text(
-                  "Skapa nytt konto här",
-                  style: TextStyle(
-                    color: AppTheme.colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+            Wrap(
+              alignment: WrapAlignment.start,
+              children: [
+                Text(
+                  "Ange dina uppgifter nedan för att logga in. ",
+                  style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                ),
+                Text(
+                  "Ny kund? ",
+                  style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                ),
+                GestureDetector(
+                  onTap: _toggleView,
+                  child: Text(
+                    "Skapa nytt konto här",
+                    style: TextStyle(
+                      color: AppTheme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-          // Email field
-          _buildTextField(
-            controller: _emailController,
-            label: "E-postadress",
-            hintText: "t.ex. grupp.elva@exempel.se",
-            icon: Icons.email_outlined,
-            errorText: _emailError,
-            keyboardType: TextInputType.emailAddress,
-          ),
+            _buildTextField(
+              controller: _emailController,
+              label: "E-postadress",
+              hintText: "t.ex. grupp.elva@exempel.se",
+              icon: Icons.email_outlined,
+              errorText: _emailError,
+              keyboardType: TextInputType.emailAddress,
+            ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          // Password field with visibility toggle
-          _buildTextField(
-            controller: _passwordController,
-            label: "Lösenord",
-            hintText: "Ditt lösenord",
-            icon: Icons.lock_outline,
-            errorText: _passwordError,
-            obscureText: !_passwordVisible,
-            isPassword: true,
-            onTogglePasswordVisibility: _togglePasswordVisibility,
-            passwordVisible: _passwordVisible,
-          ),
+            _buildTextField(
+              controller: _passwordController,
+              label: "Lösenord",
+              hintText: "Ditt lösenord",
+              icon: Icons.lock_outline,
+              errorText: _passwordError,
+              obscureText: !_passwordVisible,
+              isPassword: true,
+              onTogglePasswordVisibility: _togglePasswordVisibility,
+              passwordVisible: _passwordVisible,
+            ),
 
-          const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-          // Login button
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: _login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.colorScheme.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  ),
+                ),
+                child: const Text(
+                  "Logga in",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
-              child: const Text(
-                "Logga in",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 20),
+
+            // tos text
+            Center(
+              child: Text(
+                "Genom att logga in godkänner du våra användarvillkor och integritetspolicy.",
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // tos text
-          Center(
-            child: Text(
-              "Genom att logga in godkänner du våra användarvillkor och integritetspolicy.",
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -375,152 +382,162 @@ class _AuthDialogState extends State<AuthDialog> {
       child:
           _isCreatingAccount
               ? _buildCreatingAccountState()
-              : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "Skapa nytt konto",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  Row(
-                    children: [
-                      Text(
-                        "Fyll i dina uppgifter nedan. ",
-                        style: TextStyle(color: Colors.grey[700], fontSize: 14),
+              : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "Skapa nytt konto",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        "Befintlig kund? ",
-                        style: TextStyle(color: Colors.grey[700], fontSize: 14),
-                      ),
-                      GestureDetector(
-                        onTap: _toggleView,
-                        child: Text(
-                          "Logga in här",
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Row(
+                      children: [
+                        Text(
+                          "Fyll i dina uppgifter nedan. ",
                           style: TextStyle(
-                            color: AppTheme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[700],
                             fontSize: 14,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _firstNameController,
-                          label: "Förnamn",
-                          hintText: "t.ex. Grupp",
-                          icon: Icons.person_outline,
+                        Text(
+                          "Befintlig kund? ",
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _lastNameController,
-                          label: "Efternamn",
-                          hintText: "t.ex. Elva",
-                          icon: Icons.person_outline,
+                        GestureDetector(
+                          onTap: _toggleView,
+                          child: Text(
+                            "Logga in här",
+                            style: TextStyle(
+                              color: AppTheme.colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 24),
 
-                  _buildTextField(
-                    controller: _emailController,
-                    label: "E-postadress",
-                    hintText: "t.ex. grupp.elva@exempel.se",
-                    icon: Icons.email_outlined,
-                    errorText: _emailError,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _firstNameController,
+                            label: "Förnamn",
+                            hintText: "t.ex. Grupp",
+                            icon: Icons.person_outline,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _lastNameController,
+                            label: "Efternamn",
+                            hintText: "t.ex. Elva",
+                            icon: Icons.person_outline,
+                          ),
+                        ),
+                      ],
+                    ),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  _buildTextField(
-                    controller: _mobilePhoneNumberController,
-                    label: "Mobilnummer",
-                    hintText: "t.ex. +46701234567",
-                    icon: Icons.phone_android_outlined,
-                    errorText: _phoneError,
-                    keyboardType: TextInputType.phone,
-                  ),
+                    _buildTextField(
+                      controller: _emailController,
+                      label: "E-postadress",
+                      hintText: "t.ex. grupp.elva@exempel.se",
+                      icon: Icons.email_outlined,
+                      errorText: _emailError,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  _buildTextField(
-                    controller: _passwordController,
-                    label: "Lösenord",
-                    hintText: "Minst 6 tecken",
-                    icon: Icons.lock_outline,
-                    errorText: _passwordError,
-                    obscureText: !_passwordVisible,
-                    isPassword: true,
-                    onTogglePasswordVisibility: _togglePasswordVisibility,
-                    passwordVisible: _passwordVisible,
-                  ),
+                    _buildTextField(
+                      controller: _mobilePhoneNumberController,
+                      label: "Mobilnummer",
+                      hintText: "t.ex. +46701234567",
+                      icon: Icons.phone_android_outlined,
+                      errorText: _phoneError,
+                      keyboardType: TextInputType.phone,
+                    ),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  _buildTextField(
-                    controller: _confirmPasswordController,
-                    label: "Bekräfta lösenord",
-                    hintText: "Upprepa lösenord",
-                    icon: Icons.lock_outline,
-                    obscureText: !_confirmPasswordVisible,
-                    isPassword: true,
-                    onTogglePasswordVisibility:
-                        _toggleConfirmPasswordVisibility,
-                    passwordVisible: _confirmPasswordVisible,
-                  ),
+                    _buildTextField(
+                      controller: _passwordController,
+                      label: "Lösenord",
+                      hintText: "Minst 6 tecken",
+                      icon: Icons.lock_outline,
+                      errorText: _passwordError,
+                      obscureText: !_passwordVisible,
+                      isPassword: true,
+                      onTogglePasswordVisibility: _togglePasswordVisibility,
+                      passwordVisible: _passwordVisible,
+                    ),
 
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 16),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: _register,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            AppTheme.borderRadius,
+                    _buildTextField(
+                      controller: _confirmPasswordController,
+                      label: "Bekräfta lösenord",
+                      hintText: "Upprepa lösenord",
+                      icon: Icons.lock_outline,
+                      obscureText: !_confirmPasswordVisible,
+                      isPassword: true,
+                      onTogglePasswordVisibility:
+                          _toggleConfirmPasswordVisibility,
+                      passwordVisible: _confirmPasswordVisible,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.borderRadius,
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          "Skapa konto",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      child: const Text(
-                        "Skapa konto",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Center(
+                      child: Text(
+                        "Genom att skapa ett konto godkänner du våra användarvillkor och integritetspolicy.",
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // tos text
-                  Center(
-                    child: Text(
-                      "Genom att skapa ett konto godkänner du våra användarvillkor och integritetspolicy.",
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
     );
   }
