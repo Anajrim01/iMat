@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/product.dart';
 import 'package:imat_app/model/imat/shopping_cart.dart';
+import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 
 class BuyoutCartBar extends StatelessWidget {
@@ -34,7 +35,7 @@ class BuyoutCartBar extends StatelessWidget {
                 Expanded(
                   child: Container(
                     color: Colors.grey[100],
-                    padding: const EdgeInsets.all(32), // Increased padding
+                    padding: const EdgeInsets.all(32),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -63,8 +64,8 @@ class BuyoutCartBar extends StatelessWidget {
     List<dynamic> products,
   ) {
     return Container(
-      width: 300, // Increased width
-      padding: const EdgeInsets.all(24), // Increased padding
+      width: 300,
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -72,70 +73,75 @@ class BuyoutCartBar extends StatelessWidget {
             'För dig',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 28, // Increased font size
+              fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
           ),
           const Divider(thickness: 2),
-          const SizedBox(height: 24), // Increased spacing
+          const SizedBox(height: 24),
           Expanded(
             child: ListView.builder(
               itemCount: products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
                 return Card(
-                  margin: const EdgeInsets.only(bottom: 24), // Increased margin
+                  margin: const EdgeInsets.only(bottom: 24),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // Increased radius
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(16), // Increased padding
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Product image
                         Center(
                           child: SizedBox(
-                            height: 120, // Increased image size
+                            height: 120,
                             child: handler.getImage(product),
                           ),
                         ),
-                        const SizedBox(height: 12), // Increased spacing
-                        // Product name
+                        const SizedBox(height: 12),
                         Text(
                           product.name,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18, // Increased font size
+                            fontSize: 18,
                           ),
                         ),
-                        const SizedBox(height: 6), // Increased spacing
+                        const SizedBox(height: 6),
                         // Price
                         Text(
                           '${product.price.toStringAsFixed(2)} ${product.unit}',
-                          style: const TextStyle(fontSize: 18), // Increased font size
+                          style: const TextStyle(fontSize: 18),
                         ),
-                        const SizedBox(height: 16), // Increased spacing
-                        // Add to cart button
+                        const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              handler.shoppingCartAdd(
+                                ShoppingItem(product, amount: 1),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(64, 48), // Increased button height
-                              padding: const EdgeInsets.symmetric(vertical: 12), // Added padding
+                              minimumSize: const Size(64, 48),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                               backgroundColor: AppTheme.colorScheme.secondary,
                               foregroundColor: Colors.black,
-                              textStyle: Theme.of(context).textTheme.titleMedium // Increased text size
-                                  ?.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+                              textStyle: Theme.of(
+                                context,
+                              ).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                   AppTheme.borderRadius,
                                 ),
                                 side: BorderSide(
                                   color: Colors.deepPurple.shade100,
-                                  width: 1.0, // Increased border width
+                                  width: 1.0,
                                 ),
                               ),
                             ),
@@ -156,12 +162,12 @@ class BuyoutCartBar extends StatelessWidget {
 
   Widget _buildCartHeader(BuildContext context, double totalAmount) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 24), // Increased margin
+      margin: const EdgeInsets.only(bottom: 24),
       child: Row(
         children: [
           const Text(
             'Din varukorg',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold), // Increased font size
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           const Spacer(),
           // Total amount
@@ -170,12 +176,12 @@ class BuyoutCartBar extends StatelessWidget {
             children: [
               const Text(
                 'Totalt:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // Increased font size
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${totalAmount.toStringAsFixed(2)} kr',
                 style: const TextStyle(
-                  fontSize: 24, // Increased font size
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -195,7 +201,7 @@ class BuyoutCartBar extends StatelessWidget {
       return const Center(
         child: Text(
           'Din kundvagn är tom',
-          style: TextStyle(fontSize: 20, color: Colors.grey), // Increased font size
+          style: TextStyle(fontSize: 20, color: Colors.grey),
         ),
       );
     }
@@ -207,20 +213,22 @@ class BuyoutCartBar extends StatelessWidget {
         final itemTotal = item.amount * item.product.price;
 
         return Card(
-          margin: const EdgeInsets.only(bottom: 24), // Increased margin
+          margin: const EdgeInsets.only(bottom: 24),
           elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), // Increased radius
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Padding(
-            padding: const EdgeInsets.all(24), // Increased padding
+            padding: const EdgeInsets.all(24),
             child: Row(
               children: [
                 // Product image
                 SizedBox(
-                  width: 100, // Increased image size
-                  height: 100, // Increased image size
+                  width: 100,
+                  height: 100,
                   child: handler.getImage(item.product),
                 ),
-                const SizedBox(width: 24), // Increased spacing
+                const SizedBox(width: 24),
 
                 // Product details
                 Expanded(
@@ -230,32 +238,42 @@ class BuyoutCartBar extends StatelessWidget {
                       Text(
                         item.product.name,
                         style: const TextStyle(
-                          fontSize: 22, // Increased font size
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8), // Increased spacing
+                      const SizedBox(height: 8),
                       Text(
                         '${item.product.price.toStringAsFixed(2)} ${item.product.unit}',
-                        style: TextStyle(fontSize: 18, color: Colors.grey[700]), // Increased font size
+                        style: TextStyle(fontSize: 18, color: Colors.grey[700]),
                       ),
-                      const SizedBox(height: 16), // Increased spacing
+                      const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(100, 48), // Increased button size
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Added padding
+                          minimumSize: const Size(
+                            100,
+                            48,
+                          ), // Increased button size
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
                           backgroundColor: AppTheme.colorScheme.secondary,
                           foregroundColor: Colors.black,
-                          textStyle: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+                          textStyle: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                               AppTheme.borderRadius,
                             ),
                             side: BorderSide(
                               color: Colors.deepPurple.shade100,
-                              width: 1.0, // Increased border width
+                              width: 1.0,
                             ),
                           ),
                         ),
@@ -265,7 +283,7 @@ class BuyoutCartBar extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 24), // Increased spacing
+                const SizedBox(width: 24),
 
                 // Right section with price and quantity
                 Column(
@@ -274,11 +292,11 @@ class BuyoutCartBar extends StatelessWidget {
                     Text(
                       itemTotal.toStringAsFixed(2),
                       style: const TextStyle(
-                        fontSize: 22, // Increased font size
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 18), // Increased spacing
+                    const SizedBox(height: 18),
                     Row(
                       children: [
                         // Decrease button
@@ -288,12 +306,15 @@ class BuyoutCartBar extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(6), // Increased radius
-                              bottomLeft: Radius.circular(6), // Increased radius
+                              topLeft: Radius.circular(6),
+                              bottomLeft: Radius.circular(6),
                             ),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.remove, size: 22), // Increased icon size
+                            icon: const Icon(
+                              Icons.remove,
+                              size: 22,
+                            ), // Increased icon size
                             padding: EdgeInsets.zero,
                             onPressed: () {
                               handler.shoppingCartUpdate(item, delta: -1.0);
@@ -303,7 +324,7 @@ class BuyoutCartBar extends StatelessWidget {
 
                         // Quantity display
                         Container(
-                          width: 60, // Increased width
+                          width: 60,
                           height: 48, // Increased height
                           alignment: Alignment.center,
                           color: Colors.white,
@@ -311,7 +332,7 @@ class BuyoutCartBar extends StatelessWidget {
                             '${item.amount.toInt()}',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 20, // Increased font size
+                              fontSize: 20,
                             ),
                           ),
                         ),
@@ -323,8 +344,8 @@ class BuyoutCartBar extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AppTheme.colorScheme.primary,
                             borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(6), // Increased radius
-                              bottomRight: Radius.circular(6), // Increased radius
+                              topRight: Radius.circular(6),
+                              bottomRight: Radius.circular(6),
                             ),
                           ),
                           child: IconButton(

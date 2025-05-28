@@ -1,10 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
-import 'package:imat_app/model/imat/customer.dart';
-import 'package:provider/provider.dart';
-import 'package:imat_app/model/imat/user.dart';
 
 class BuyoutPayment extends StatefulWidget {
   final ImatDataHandler handler;
@@ -43,17 +38,17 @@ class _BuyoutPaymentState extends State<BuyoutPayment> {
                 color: Colors.white,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 60),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 40,
+                  horizontal: 60,
+                ),
                 child: Column(
                   children: [
                     Row(
                       children: [
                         const Padding(
                           padding: EdgeInsets.only(top: 9),
-                          child: Icon(
-                            Icons.credit_card,
-                            size: 40,
-                          ),
+                          child: Icon(Icons.credit_card, size: 40),
                         ),
                         const SizedBox(width: 16),
                         Text(
@@ -152,12 +147,12 @@ class _BuyoutPaymentState extends State<BuyoutPayment> {
                         fontWeight: FontWeight.normal,
                         color: Colors.black,
                       ),
-                    )
+                    ),
                   ],
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -165,7 +160,6 @@ class _BuyoutPaymentState extends State<BuyoutPayment> {
 
   Widget _buildField({
     required String label,
-    String? trailingLabel,
     required TextEditingController controller,
     String? hintText,
     bool obscure = false,

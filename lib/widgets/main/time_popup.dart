@@ -11,13 +11,14 @@ class TimePopup extends StatefulWidget {
 class _TimePopupState extends State<TimePopup> {
   int selectedDayIndex = -1;
   int selectedTimeIndex = -1;
-  int hoveredDayIndex = -1;
-  int hoveredTimeIndex = -1;
 
   final List<String> times = [
     "08:00 - 10:00",
+    "10:00 - 12:00",
     "12:00 - 14:00",
+    "14:00 - 16:00",
     "16:00 - 18:00",
+    "18:00 - 20:00",
   ];
 
   List<Map<String, String>> days = [];
@@ -27,180 +28,256 @@ class _TimePopupState extends State<TimePopup> {
     super.initState();
     final now = DateTime.now();
     final weekdayNames = [
-      "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag", "Söndag"
+      "Måndag",
+      "Tisdag",
+      "Onsdag",
+      "Torsdag",
+      "Fredag",
+      "Lördag",
+      "Söndag",
     ];
 
-    days = List.generate(4, (i) {
-      final date = now.add(Duration(days: i+1));
+    days = List.generate(7, (i) {
+      final date = now.add(Duration(days: i + 1));
       final weekday = weekdayNames[date.weekday - 1];
       final formattedDate = "${date.day} ${_getMonthName(date.month)}";
-      return {
-        "day": weekday,
-        "date": formattedDate,
-      };
+      return {"day": weekday, "date": formattedDate};
     });
   }
 
   String _getMonthName(int month) {
     const months = [
-      "januari", "februari", "mars", "april", "maj", "juni",
-      "juli", "augusti", "september", "oktober", "november", "december"
+      "januari",
+      "februari",
+      "mars",
+      "april",
+      "maj",
+      "juni",
+      "juli",
+      "augusti",
+      "september",
+      "oktober",
+      "november",
+      "december",
     ];
     return months[month - 1];
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = AppTheme.colorScheme;
-    final textTheme = AppTheme.textTheme;
-
     return Dialog(
-      insetPadding: const EdgeInsets.all(AppTheme.paddingLarge),
-      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
       ),
-      child: SizedBox(
-        width: 800,
-        height: 600,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        constraints: const BoxConstraints(maxWidth: 900, maxHeight: 700),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(AppTheme.paddingMedium),
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppTheme.colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(AppTheme.borderRadius),
+                  topRight: Radius.circular(AppTheme.borderRadius),
+                ),
+              ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  const Icon(Icons.access_time, size: 32, color: Colors.green),
+                  const SizedBox(width: 16),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Välj leveranstid',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Välj en dag och tid som passar dig',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.close),
-                    color: Colors.black54,
-                    iconSize: 28,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: AppTheme.paddingLarge,
-                right: AppTheme.paddingLarge,
-                bottom: AppTheme.paddingMedium,
-              ),
-              child: Text(
-                "Tid för leverans",
-                style: textTheme.displayLarge,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.paddingMedium),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(days.length, (index) {
-                  return _dayCard(
-                    index,
-                    days[index]['day']!,
-                    days[index]['date']!,
-                    index == selectedDayIndex,
-                    () {
-                      setState(() {
-                        selectedDayIndex = index;
-                      });
-                    },
-                    textTheme,
-                    colorScheme,
-                  );
-                }),
-              ),
-            ),
-            const SizedBox(height: AppTheme.paddingMedium),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.paddingMediumSmall),
-                itemCount: times.length,
-                itemBuilder: (context, index) {
-                  final isSelected = selectedTimeIndex == index;
-                  final isHovered = hoveredTimeIndex == index;
 
-                  return MouseRegion(
-                    onEnter: (_) => setState(() => hoveredTimeIndex = index),
-                    onExit: (_) => setState(() => hoveredTimeIndex = -1),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedTimeIndex = index;
-                        });
-                      },
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: AppTheme.paddingTiny),
-                        padding: const EdgeInsets.all(AppTheme.paddingSmall),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? colorScheme.primary
-                              : (isHovered ? colorScheme.primary.withOpacity(0.1) : Colors.white),
-                          border: Border.all(
-                            color: isSelected ? colorScheme.primary : Colors.grey.shade300,
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Välj dag:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 110,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: days.length,
+                      itemBuilder: (context, index) {
+                        final isSelected = selectedDayIndex == index;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: _buildDayCard(
+                            index,
+                            days[index]['day']!,
+                            days[index]['date']!,
+                            isSelected,
                           ),
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              times[index],
-                              style: textTheme.bodyLarge!.copyWith(
-                                color: isSelected ? Colors.white : Colors.black,
-                              ),
-                            ),
-                            if (isSelected)
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Icon(Icons.check, color: Colors.white),
-                              ),
-                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Välj tid:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          // Determine how many columns based on width
+                          final int columns =
+                              constraints.maxWidth > 600 ? 3 : 2;
+
+                          return GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: columns,
+                                  childAspectRatio: 3,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                ),
+                            itemCount: times.length,
+                            itemBuilder: (context, index) {
+                              final isSelected = selectedTimeIndex == index;
+                              return _buildTimeCard(
+                                index,
+                                times[index],
+                                isSelected,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            if (selectedDayIndex != -1 && selectedTimeIndex != -1)
+              Container(
+                margin: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  border: Border.all(color: Colors.green),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.green),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        "Leverans ${days[selectedDayIndex]['day']} ${days[selectedDayIndex]['date']}, kl ${times[selectedTimeIndex]}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
                         ),
                       ),
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: AppTheme.paddingMedium),
+
             Padding(
-              padding: const EdgeInsets.only(
-                bottom: AppTheme.paddingLarge,
-                left: AppTheme.paddingLarge,
-                right: AppTheme.paddingLarge,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: selectedDayIndex != -1 && selectedTimeIndex != -1
-                      ? () {
-                          final selectedDay = days[selectedDayIndex];
-                          final selectedTime = times[selectedTimeIndex];
-                          final result =
-                              "${selectedDay['day']} ${selectedDay['date']}, $selectedTime";
-                          Navigator.of(context).pop(result);
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedDayIndex != -1 && selectedTimeIndex != -1
-                        ? colorScheme.primary
-                        : Colors.grey,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppTheme.paddingMedium,
-                    ),
-                    textStyle: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        side: BorderSide(color: Colors.grey[400]!),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadius,
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Avbryt',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
                   ),
-                  child: const Text("Klar"),
-                ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed:
+                          selectedDayIndex != -1 && selectedTimeIndex != -1
+                              ? () {
+                                final selectedDay = days[selectedDayIndex];
+                                final selectedTime = times[selectedTimeIndex];
+                                final result =
+                                    "${selectedDay['day']} ${selectedDay['date']}, $selectedTime";
+                                Navigator.of(context).pop(result);
+                              }
+                              : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: Colors.grey[300],
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadius,
+                          ),
+                        ),
+                      ),
+                      child: const Text('Bekräfta tid'),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -209,67 +286,91 @@ class _TimePopupState extends State<TimePopup> {
     );
   }
 
-  Widget _dayCard(
-    int index,
-    String title,
-    String date,
-    bool isSelected,
-    VoidCallback onTap,
-    TextTheme textTheme,
-    ColorScheme colorScheme,
-  ) {
-    final isHovered = hoveredDayIndex == index;
-
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => hoveredDayIndex = index),
-      onExit: (_) => setState(() => hoveredDayIndex = -1),
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.paddingMedium,
-            vertical: AppTheme.paddingSmall,
+  Widget _buildDayCard(int index, String day, String date, bool isSelected) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedDayIndex = index;
+        });
+      },
+      borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+      child: Container(
+        width: 120,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green : Colors.white,
+          border: Border.all(
+            color: isSelected ? Colors.green : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
           ),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? colorScheme.primary
-                : isHovered
-                    ? colorScheme.primary.withOpacity(0.1)
-                    : Colors.white,
-            border: Border.all(
-              color: isSelected ? colorScheme.primary : Colors.grey,
-              width: 2,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              day,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? Colors.white : Colors.black,
+              ),
             ),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+            const SizedBox(height: 4),
+            Text(
+              date,
+              style: TextStyle(
+                fontSize: 16,
+                color: isSelected ? Colors.white : Colors.grey[700],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeCard(int index, String time, bool isSelected) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedTimeIndex = index;
+        });
+      },
+      borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green : Colors.white,
+          border: Border.all(
+            color: isSelected ? Colors.green : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
           ),
-          child: Column(
-            children: [
-              Text(
-                title,
-                style: textTheme.headlineSmall!.copyWith(
-                  color: isSelected ? Colors.white : Colors.black,
-                ),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.access_time,
+              color: isSelected ? Colors.white : Colors.grey[600],
+              size: 24,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              time,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? Colors.white : Colors.black,
               ),
-              Text(
-                date,
-                style: textTheme.bodySmall!.copyWith(
-                  color: isSelected ? Colors.white : Colors.black54,
-                ),
-              ),
+            ),
+            if (isSelected) ...[
+              const Spacer(),
+              const Icon(Icons.check_circle, color: Colors.white),
             ],
-          ),
+          ],
         ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-

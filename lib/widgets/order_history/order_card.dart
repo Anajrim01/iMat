@@ -125,9 +125,9 @@ class OrderCard extends StatelessWidget {
                               size: 22,
                             ),
                             const SizedBox(width: 8),
-                            const Text(
-                              'Levererad till: Hemadress',
-                              style: TextStyle(fontSize: 17),
+                            Text(
+                              'Levererad till: ${handler.getCustomer().address}, ${handler.getCustomer().postCode} ${handler.getCustomer().postAddress}',
+                              style: const TextStyle(fontSize: 17),
                             ),
                           ],
                         ),
@@ -210,28 +210,28 @@ class OrderCard extends StatelessWidget {
                         label: const Text('Beställ igen'),
                         style: actionButtonStyle,
                       ),
-                      if (isExpanded) ...[
-                        const SizedBox(height: 18), 
-                        OutlinedButton.icon(
-                          onPressed: () {
-                            // TODO: Implement download reciept function
-                            // Do nothing
-                          },
-                          icon: const Icon(Icons.download, size: 22),
-                          label: const Text('Hämta kvitto'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.black87,
-                            side: BorderSide(color: Colors.grey[400]!),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 14, 
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                            ),
-                          ),
-                        ),
-                      ],
+                      // if (isExpanded) ...[
+                      //   const SizedBox(height: 18), 
+                      //   OutlinedButton.icon(
+                      //     onPressed: () {
+                      //       // Implement download reciept function
+                      //       // Do nothing
+                      //     },
+                      //     icon: const Icon(Icons.download, size: 22),
+                      //     label: const Text('Hämta kvitto'),
+                      //     style: OutlinedButton.styleFrom(
+                      //       foregroundColor: Colors.black87,
+                      //       side: BorderSide(color: Colors.grey[400]!),
+                      //       padding: const EdgeInsets.symmetric(
+                      //         horizontal: 18,
+                      //         vertical: 14, 
+                      //       ),
+                      //       shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ],
                     ],
                   ),
                 ],

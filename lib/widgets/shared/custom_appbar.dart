@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
-import 'package:imat_app/pages/AuthDialogView.dart';
+import 'package:imat_app/pages/auth_view.dart';
 import 'package:provider/provider.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 import 'package:imat_app/model/imat/product.dart';
@@ -437,7 +437,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           height: 56,
                           width: 100,
                           decoration: BoxDecoration(
-                            color: Colors.green[600],
+                            color: AppTheme.colorScheme.primary,
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(AppTheme.borderRadius),
                               bottomRight: Radius.circular(
