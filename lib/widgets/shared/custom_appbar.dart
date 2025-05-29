@@ -90,6 +90,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
   }
 
+  void on_click_card(Product product){
+    widget.onSearchSubmitted(product.name);
+    _removeOverlay();
+     _searchFocusNode.unfocus();
+  }
+
   void _handleSearch() {
     widget.onSearchSubmitted(_searchQuery);
     _removeOverlay();
@@ -190,10 +196,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                         vertical: 6,
                                       ),
                                       elevation: 2,
-                                      child: Padding(
+                                      child: InkWell(
+                                        onTap:(){
+                                          on_click_card(product);
+                                        },
+                                        child: Padding(
                                         padding: const EdgeInsets.all(12.0),
-                                        child: Row(
-                                          children: [
+                                          child: Row(
+                                            children: [
                                             // Product image
                                             SizedBox(
                                               width: 80,
@@ -306,6 +316,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                           ],
                                         ),
                                       ),
+                                      )
                                     );
                                   },
                                 ),
