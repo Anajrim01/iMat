@@ -90,12 +90,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
   }
 
-  void on_click_card(Product product){
-    widget.onSearchSubmitted(product.name);
-    _removeOverlay();
-     _searchFocusNode.unfocus();
-  }
-
   void _handleSearch() {
     widget.onSearchSubmitted(_searchQuery);
     _removeOverlay();
@@ -197,126 +191,130 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                       ),
                                       elevation: 2,
                                       child: InkWell(
-                                        onTap:(){
-                                          on_click_card(product);
+                                        onTap: () {
+                                          _searchQuery = product.name;
+                                          _searchController.text = _searchQuery;
+                                          _handleSearch();
                                         },
                                         child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
+                                          padding: const EdgeInsets.all(12.0),
                                           child: Row(
                                             children: [
-                                            // Product image
-                                            SizedBox(
-                                              width: 80,
-                                              height: 80,
-                                              child: handler.getImage(product),
-                                            ),
-                                            const SizedBox(width: 20),
-
-                                            // Product name and price
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    product.name,
-                                                    style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    '${product.price.toStringAsFixed(2)} ${product.unit}',
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
+                                              // Product image
+                                              SizedBox(
+                                                width: 80,
+                                                height: 80,
+                                                child: handler.getImage(
+                                                  product,
+                                                ),
                                               ),
-                                            ),
+                                              const SizedBox(width: 20),
 
-                                            // Add button
-                                            ElevatedButton.icon(
-                                              onPressed: () {
-                                                _isInteractingWithOverlay =
-                                                    true;
-                                                // Add product to cart
-                                                handler.shoppingCartAdd(
-                                                  ShoppingItem(
-                                                    product,
-                                                    amount: 1,
-                                                  ),
-                                                );
-                                                // Show confirmation message (feedback)
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      '${product.name} tillagd i kundvagnen',
+                                              // Product name and price
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      product.name,
                                                       style: const TextStyle(
-                                                        fontSize: 16,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
-                                                    behavior:
-                                                        SnackBarBehavior
-                                                            .floating,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            AppTheme
-                                                                .borderRadius,
-                                                          ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      '${product.price.toStringAsFixed(2)} ${product.unit}',
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
-                                                  ),
-                                                );
-                                              },
-                                              icon: const Icon(
-                                                Icons.add_shopping_cart,
-                                                size: 24,
-                                                color: Colors.black,
+                                                  ],
+                                                ),
                                               ),
-                                              label: const Text(
-                                                'Lägg till',
-                                                style: TextStyle(
-                                                  fontSize: 20,
+
+                                              // Add button
+                                              ElevatedButton.icon(
+                                                onPressed: () {
+                                                  _isInteractingWithOverlay =
+                                                      true;
+                                                  // Add product to cart
+                                                  handler.shoppingCartAdd(
+                                                    ShoppingItem(
+                                                      product,
+                                                      amount: 1,
+                                                    ),
+                                                  );
+                                                  // Show confirmation message (feedback)
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        '${product.name} tillagd i kundvagnen',
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      behavior:
+                                                          SnackBarBehavior
+                                                              .floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              AppTheme
+                                                                  .borderRadius,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                icon: const Icon(
+                                                  Icons.add_shopping_cart,
+                                                  size: 24,
                                                   color: Colors.black,
                                                 ),
-                                              ),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppTheme
-                                                        .colorScheme
-                                                        .secondary,
-                                                foregroundColor: Colors.white,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 12,
-                                                    ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        AppTheme.borderRadius,
+                                                label: const Text(
+                                                  'Lägg till',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      AppTheme
+                                                          .colorScheme
+                                                          .secondary,
+                                                  foregroundColor: Colors.white,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                        vertical: 12,
                                                       ),
-                                                  side: BorderSide(
-                                                    color:
-                                                        Colors
-                                                            .deepPurple
-                                                            .shade100,
-                                                    width: 1,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          AppTheme.borderRadius,
+                                                        ),
+                                                    side: BorderSide(
+                                                      color:
+                                                          Colors
+                                                              .deepPurple
+                                                              .shade100,
+                                                      width: 1,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      )
                                     );
                                   },
                                 ),
