@@ -5,20 +5,31 @@ import 'package:imat_app/model/imat/shopping_cart.dart';
 import 'package:imat_app/model/imat/shopping_item.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
 
-class BuyoutCartBar extends StatelessWidget {
+class BuyoutCartBar extends StatefulWidget {
   final ImatDataHandler handler;
   const BuyoutCartBar({required this.handler, super.key});
 
   @override
+  State<BuyoutCartBar> createState() => _BuyoutCartBarState();
+}
+
+class _BuyoutCartBarState extends State<BuyoutCartBar> {
+  late List<Product> _recommendedProducts;
+
+  @override
+  void initState() {
+    super.initState();
+    // Stable products selection - only run once
+    _recommendedProducts = _getRecommendedProducts(widget.handler, 3);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final cart = handler.getShoppingCart();
+    final cart = widget.handler.getShoppingCart();
     final totalAmount = cart.items.fold<double>(
       0,
       (sum, item) => sum + (item.amount * item.product.price),
     );
-
-    // Get recommended products for "För dig" section
-    final recommendedProducts = _getRecommendedProducts(handler, 3);
 
     return Scaffold(
       body: Column(
@@ -29,7 +40,11 @@ class BuyoutCartBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Left sidebar - "För dig"
-                _buildForDigSection(context, handler, recommendedProducts),
+                _buildForDigSection(
+                  context,
+                  widget.handler,
+                  _recommendedProducts,
+                ),
 
                 // Main cart content
                 Expanded(
@@ -44,7 +59,7 @@ class BuyoutCartBar extends StatelessWidget {
 
                         // Cart items
                         Expanded(
-                          child: _buildCartItems(context, cart, handler),
+                          child: _buildCartItems(context, cart, widget.handler),
                         ),
                       ],
                     ),
@@ -251,10 +266,7 @@ class BuyoutCartBar extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(
-                            100,
-                            48,
-                          ), 
+                          minimumSize: const Size(100, 48),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 12,
@@ -299,10 +311,9 @@ class BuyoutCartBar extends StatelessWidget {
                     const SizedBox(height: 18),
                     Row(
                       children: [
-                        
                         Container(
-                          width: 48, 
-                          height: 48, 
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: const BorderRadius.only(
@@ -311,10 +322,7 @@ class BuyoutCartBar extends StatelessWidget {
                             ),
                           ),
                           child: IconButton(
-                            icon: const Icon(
-                              Icons.remove,
-                              size: 22,
-                            ), 
+                            icon: const Icon(Icons.remove, size: 22),
                             padding: EdgeInsets.zero,
                             onPressed: () {
                               handler.shoppingCartUpdate(item, delta: -1.0);
@@ -339,8 +347,8 @@ class BuyoutCartBar extends StatelessWidget {
 
                         // Increase button
                         Container(
-                          width: 48, 
-                          height: 48, 
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: AppTheme.colorScheme.primary,
                             borderRadius: const BorderRadius.only(
@@ -351,7 +359,7 @@ class BuyoutCartBar extends StatelessWidget {
                           child: IconButton(
                             icon: const Icon(
                               Icons.add,
-                              size: 22, 
+                              size: 22,
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.zero,
@@ -373,7 +381,6 @@ class BuyoutCartBar extends StatelessWidget {
   }
 
   List<Product> _getRecommendedProducts(ImatDataHandler handler, int count) {
-    // Get products currently in the cart
     final cartProductIds =
         handler
             .getShoppingCart()
