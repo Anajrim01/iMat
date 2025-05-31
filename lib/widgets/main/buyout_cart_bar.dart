@@ -302,7 +302,7 @@ class _BuyoutCartBarState extends State<BuyoutCartBar> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      itemTotal.toStringAsFixed(2),
+                      "${itemTotal.toStringAsFixed(2)} kr",
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,

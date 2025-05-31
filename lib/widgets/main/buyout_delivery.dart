@@ -7,7 +7,8 @@ import 'package:imat_app/widgets/main/time_popup.dart';
 import 'package:provider/provider.dart';
 
 class BuyoutDelivery extends StatefulWidget {
-  const BuyoutDelivery({super.key});
+  final String deliveryTime;
+  const BuyoutDelivery({super.key, this.deliveryTime = ''});
 
   @override
   State<BuyoutDelivery> createState() => BuyoutDeliveryState();
@@ -15,14 +16,19 @@ class BuyoutDelivery extends StatefulWidget {
 
 class BuyoutDeliveryState extends State<BuyoutDelivery> {
   bool addressSelected = false;
-  String? selectedTime;
+  late String selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTime = widget.deliveryTime.isNotEmpty ? widget.deliveryTime : '';
+  }
 
   Future<void> showLoginDeliveryPopup() async {
     await showDialog(
       context: context,
       builder: (context) => const LoginDeliveyPopup(),
     );
-    setState(() {}); // Refresh state after dialog closes
   }
 
   Future<void> showTimePopup() async {
@@ -39,14 +45,8 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
   }
 
   bool hasValidAddress() {
-    final userManager = Provider.of<UserManager>(context, listen: false);
     final iMatHandler = Provider.of<ImatDataHandler>(context, listen: false);
     final customer = iMatHandler.getCustomer();
-
-    // should be logged in but still confirm...
-    if (!userManager.isLoggedIn) {
-      return false;
-    }
 
     return customer.address.isNotEmpty &&
         customer.postCode.isNotEmpty &&
@@ -54,17 +54,16 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
   }
 
   bool hasSelectedTime() {
-    return selectedTime != null;
+    return selectedTime.isNotEmpty;
   }
 
   String getSelectedTime() {
-    if (selectedTime != null) {
-      return selectedTime!;
+    if (selectedTime.isNotEmpty) {
+      return selectedTime;
     } else {
       return "Ingen tid vald";
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +156,7 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
                             child: Column(
                               children: [
                                 _buildStatusSection(hasAddress),
-                                if (hasAddress && selectedTime != null) ...[
+                                if (hasAddress && selectedTime.isNotEmpty) ...[
                                   const SizedBox(height: 24),
                                   _buildSummarySection(address),
                                 ],
@@ -185,7 +184,7 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
                           ),
                           const SizedBox(height: 24),
                           _buildStatusSection(hasAddress),
-                          if (hasAddress && selectedTime != null) ...[
+                          if (hasAddress && selectedTime.isNotEmpty) ...[
                             const SizedBox(height: 24),
                             _buildSummarySection(address),
                           ],
@@ -199,7 +198,7 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
                           _buildTimeSection(),
                           const SizedBox(height: 24),
                           _buildStatusSection(hasAddress),
-                          if (hasAddress && selectedTime != null) ...[
+                          if (hasAddress && selectedTime.isNotEmpty) ...[
                             const SizedBox(height: 24),
                             _buildSummarySection(address),
                           ],
@@ -300,7 +299,7 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
             ),
           ),
 
-          // Help text for logging in
+          // Help text for logging in (deprecated behavior)
           if (!isLoggedIn)
             const Padding(
               padding: EdgeInsets.only(top: 16.0),
@@ -335,9 +334,9 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
             child: Row(
               children: [
                 Icon(
-                  selectedTime != null ? Icons.check_circle : Icons.schedule,
+                  selectedTime.isNotEmpty ? Icons.check_circle : Icons.schedule,
                   size: 36,
-                  color: selectedTime != null ? Colors.green : Colors.grey,
+                  color: selectedTime.isNotEmpty ? Colors.green : Colors.grey,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -345,23 +344,23 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        selectedTime != null
+                        selectedTime.isNotEmpty
                             ? "Leveranstid vald"
                             : "Ingen tid vald",
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color:
-                              selectedTime != null
+                              selectedTime.isNotEmpty
                                   ? Colors.black
                                   : Colors.grey[700],
                         ),
                       ),
-                      if (selectedTime != null)
+                      if (selectedTime.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            selectedTime!,
+                            selectedTime,
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.black87,
@@ -384,13 +383,13 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
               child: ElevatedButton.icon(
                 onPressed: showTimePopup,
                 icon: Icon(
-                  selectedTime != null
+                  selectedTime.isNotEmpty
                       ? Icons.edit_calendar
                       : Icons.calendar_month,
                   size: 24,
                 ),
                 label: Text(
-                  selectedTime != null ? 'Ändra tid' : 'Välj tid',
+                  selectedTime.isNotEmpty ? 'Ändra tid' : 'Välj tid',
                   style: const TextStyle(fontSize: 20),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -409,7 +408,7 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
   }
 
   Widget _buildStatusSection(bool hasAddress) {
-    final bool isTimeSelected = selectedTime != null;
+    final bool isTimeSelected = selectedTime.isNotEmpty;
     final bool allSelected = hasAddress && isTimeSelected;
 
     return Container(
@@ -499,7 +498,7 @@ class BuyoutDeliveryState extends State<BuyoutDelivery> {
             _buildSummaryItem(
               icon: Icons.access_time_filled,
               title: "Leveranstid:",
-              value: selectedTime!,
+              value: selectedTime,
             ),
           ],
         ),

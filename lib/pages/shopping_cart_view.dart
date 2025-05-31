@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
+import 'package:imat_app/login_prompt.dart';
 import 'package:imat_app/model/imat_data_handler.dart';
-import 'package:imat_app/pages/auth_view.dart';
 import 'package:imat_app/widgets/main/buyout_cart_bar.dart';
 import 'package:imat_app/widgets/main/buyout_delivery.dart';
 import 'package:imat_app/widgets/main/buyout_payment.dart';
@@ -20,10 +20,11 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
   String _deliveryTime = '';
 
   // Keys to access child widget states
+  // i.e to access the delivery time selected in BuyoutDelivery
   final GlobalKey<BuyoutDeliveryState> _deliveryKey =
       GlobalKey<BuyoutDeliveryState>();
 
-  // Step information
+  // Steps for checkout
   final List<Map<String, dynamic>> _steps = [
     {'number': 1, 'title': 'Varukorg', 'icon': Icons.shopping_cart},
     {'number': 2, 'title': 'Leverans', 'icon': Icons.local_shipping},
@@ -36,26 +37,29 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Disable default back button
+        automaticallyImplyLeading: false,
         toolbarHeight: 80,
         title: Row(
           children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/');
-              },
-              child: Row(
-                children: [
-                  Text(
-                    'I',
-                    style: TextStyle(
-                      color: AppTheme.colorScheme.primary,
-                      fontSize: 50,
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/');
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      'I',
+                      style: TextStyle(
+                        color: AppTheme.colorScheme.primary,
+                        fontSize: 50,
+                      ),
                     ),
-                  ),
-                  const Text('Mat', style: TextStyle(fontSize: 50)),
-                  const SizedBox(width: 120),
-                ],
+                    const Text('Mat', style: TextStyle(fontSize: 50)),
+                    const SizedBox(width: 120),
+                  ],
+                ),
               ),
             ),
 
@@ -101,7 +105,10 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                 _currentStep == 1
                     ? BuyoutCartBar(handler: handler)
                     : _currentStep == 2
-                    ? BuyoutDelivery(key: _deliveryKey)
+                    ? BuyoutDelivery(
+                      key: _deliveryKey,
+                      deliveryTime: _deliveryTime,
+                    )
                     : BuyoutPayment(
                       handler: handler,
                       deliveryTime: _deliveryTime,
@@ -116,6 +123,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
   Widget _buildStepIndicator() {
     final userManager = context.watch<UserManager>();
     final bool isLoggedIn = userManager.isLoggedIn;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
@@ -145,8 +153,8 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                   const Icon(Icons.arrow_back, size: 22),
                   const SizedBox(width: 8),
                   Text(
-                    _currentStep > 1 && _currentStep <= 2
-                        ? _steps[_currentStep - 1]['title']
+                    _currentStep > 1 && _currentStep <= 3
+                        ? 'Tillbaka till ${(_steps[_currentStep - 2]['title']).toString().toLowerCase()}'
                         : 'Tillbaka',
                     style: const TextStyle(fontSize: 18),
                   ),
@@ -155,7 +163,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
             ),
           ),
 
-          // Centered step indicator
+          // Step indicator bar
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -163,70 +171,90 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                   _steps.map((step) {
                     final isActive = step['number'] == _currentStep;
                     final isCompleted = step['number'] < _currentStep;
+                    final isPreviousOrCurrent = step['number'] <= _currentStep;
 
-                    return Row(
-                      children: [
-                        // Step indicator
-                        Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                                isCompleted || isActive
-                                    ? Colors.green
-                                    : Colors.grey.shade300,
-                          ),
-                          child: Center(
-                            child:
-                                isCompleted || isActive
-                                    ? const Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 26,
-                                    )
-                                    : Text(
-                                      step['number'].toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                          ),
+                    return MouseRegion(
+                      cursor:
+                          isPreviousOrCurrent
+                              ? SystemMouseCursors.click
+                              : SystemMouseCursors.basic,
+                      child: GestureDetector(
+                        onTap:
+                            isPreviousOrCurrent
+                                ? () =>
+                                    _handleStepTap(step['number'], isLoggedIn)
+                                : null,
+                        child: Row(
+                          children: [
+                            // Step indicator
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    isCompleted || isActive
+                                        ? Colors.green
+                                        : Colors.grey.shade300,
+                              ),
+                              child: Center(
+                                child:
+                                    isCompleted
+                                        ? const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 26,
+                                        )
+                                        : isActive
+                                        ? Icon(
+                                          step['icon'],
+                                          color: Colors.white,
+                                          size: 22,
+                                        )
+                                        : Text(
+                                          step['number'].toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                              ),
+                            ),
+
+                            // Step title
+                            const SizedBox(width: 12),
+                            Text(
+                              step['title'],
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight:
+                                    isActive || isCompleted
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                color:
+                                    isActive || isCompleted
+                                        ? Colors.black
+                                        : Colors.grey.shade700,
+                              ),
+                            ),
+
+                            // Connector line
+                            if (step['number'] < 3) ...[
+                              const SizedBox(width: 12),
+                              Container(
+                                width: 30,
+                                height: 3,
+                                color:
+                                    isCompleted
+                                        ? Colors.green
+                                        : Colors.grey.shade300,
+                              ),
+                              const SizedBox(width: 12),
+                            ],
+                          ],
                         ),
-
-                        // Step title
-                        const SizedBox(width: 12),
-                        Text(
-                          step['title'],
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight:
-                                isActive || isCompleted
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                            color:
-                                isActive || isCompleted
-                                    ? Colors.black
-                                    : Colors.grey.shade700,
-                          ),
-                        ),
-
-                        // Connector line
-                        if (step['number'] < 3) ...[
-                          const SizedBox(width: 12),
-                          Container(
-                            width: 30,
-                            height: 3,
-                            color:
-                                isCompleted
-                                    ? Colors.green
-                                    : Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 12),
-                        ],
-                      ],
+                      ),
                     );
                   }).toList(),
             ),
@@ -289,7 +317,8 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
       }
 
       if (!isLoggedIn) {
-        _showLoginPrompt(
+        LoginPromptDialog.show(
+          context,
           'Du måste logga in',
           'För att fortsätta till leverans behöver du logga in eller skapa ett konto.',
         );
@@ -354,49 +383,26 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
     );
   }
 
-  void _showLoginPrompt(String title, String message) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            content: Text(message, style: const TextStyle(fontSize: 16)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Avbryt'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Show login dialog
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AuthDialog();
-                    },
-                  ).then((_) {
-                    // Refresh the state after login
-                    setState(() {});
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                  ),
-                ),
-                child: const Text('Logga in / Skapa konto'),
-              ),
-            ],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-            ),
-          ),
-    );
+  void _handleStepTap(int stepNumber, bool isLoggedIn) {
+    // Must not allow navigating to future steps
+    if (stepNumber > _currentStep) return;
+
+    if (stepNumber == 1) {
+      _navigateToStep(stepNumber);
+      return;
+    }
+    if (stepNumber == 2) {
+      // Make sure the user hasn't buggged the app by placing an order and then trying to go back
+      final handler = Provider.of<ImatDataHandler>(context, listen: false);
+      if (handler.getShoppingCart().items.isEmpty) {
+        _showValidationError(
+          'Din varukorg är tom',
+          'Lägg till produkter innan du fortsätter.',
+        );
+        return;
+      }
+      _navigateToStep(stepNumber);
+      return;
+    }
   }
 }

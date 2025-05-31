@@ -59,7 +59,7 @@ class ProductFilters extends StatelessWidget {
           ),
         ),
 
-        // Category filter row
+        // Filters row
         Row(
           children: [
             const Text(

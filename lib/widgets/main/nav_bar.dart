@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:imat_app/app_theme.dart';
+import 'package:imat_app/model/imat/user_manager.dart';
+import 'package:imat_app/login_prompt.dart';
+import 'package:provider/provider.dart';
 
-class MainNavigationBar extends StatelessWidget {
+class MainNavigationBar extends StatefulWidget {
   final bool showingFavorites;
   final VoidCallback onShopPressed;
   final VoidCallback onOrderHistoryPressed;
@@ -16,7 +19,15 @@ class MainNavigationBar extends StatelessWidget {
   });
 
   @override
+  _MainNavigationBarState createState() => _MainNavigationBarState();
+}
+
+class _MainNavigationBarState extends State<MainNavigationBar> {
+  @override
   Widget build(BuildContext context) {
+    final userManager = context.watch<UserManager>();
+    final bool isLoggedIn = userManager.isLoggedIn;
+
     // Button styles
     final ButtonStyle lightPurpleButtonStyle = ElevatedButton.styleFrom(
       backgroundColor: AppTheme.colorScheme.secondary,
@@ -64,17 +75,29 @@ class MainNavigationBar extends StatelessWidget {
         children: [
           // Shop button
           ElevatedButton.icon(
-            onPressed: onShopPressed,
+            onPressed: widget.onShopPressed,
             icon: const Icon(Icons.shopping_basket_outlined, size: 24),
             label: const Text('Handla'),
             style:
-                showingFavorites ? lightPurpleButtonStyle : selectedButtonStyle,
+                widget.showingFavorites
+                    ? lightPurpleButtonStyle
+                    : selectedButtonStyle,
           ),
           const SizedBox(width: 16),
 
           // Order history button
           ElevatedButton.icon(
-            onPressed: onOrderHistoryPressed,
+            onPressed: () {
+              if (!isLoggedIn) {
+                LoginPromptDialog.show(
+                  context,
+                  'Logga in för att se beställningar',
+                  'Du måste vara inloggad för att se dina tidigare beställningar.',
+                );
+                return;
+              }
+              widget.onOrderHistoryPressed();
+            },
             icon: const Icon(Icons.access_time, size: 24),
             label: const Text('Tidigare beställningar'),
             style: lightPurpleButtonStyle,
@@ -83,11 +106,23 @@ class MainNavigationBar extends StatelessWidget {
 
           // Favorites button
           ElevatedButton.icon(
-            onPressed: onFavoritesPressed,
+            onPressed: () {
+              if (!isLoggedIn) {
+                LoginPromptDialog.show(
+                  context,
+                  'Logga in för att se favoriter',
+                  'Du måste vara inloggad för att se dina sparade favoriter.',
+                );
+                return;
+              }
+              widget.onFavoritesPressed();
+            },
             icon: const Icon(Icons.star_border_outlined, size: 24),
             label: const Text('Mina favoriter'),
             style:
-                showingFavorites ? selectedButtonStyle : lightPurpleButtonStyle,
+                widget.showingFavorites
+                    ? selectedButtonStyle
+                    : lightPurpleButtonStyle,
           ),
         ],
       ),
