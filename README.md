@@ -147,11 +147,3 @@ Projektet har följande mappstruktur (outdated):
 
 ![image](https://github.com/user-attachments/assets/e3872d58-589f-4e20-9bc0-0727b3c32072)
 ![image](https://github.com/user-attachments/assets/5aa75fc7-3941-4f3c-9d51-777535d87cc2)
-
-
-
-
-
-
-### Licens
-Unlicensed and private.
