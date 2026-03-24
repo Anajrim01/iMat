@@ -119,9 +119,3 @@ Project---Design-och-kontruktion-av-grafiska-gr-nssnitt/
 
 #### Tidigare Beställningar
 ![image](https://github.com/user-attachments/assets/8544903b-60b7-4fab-a6ac-514ecd16f8c8)
-
-
-
-
-### Licens
-Unlicensed and private.
